@@ -3,21 +3,69 @@
         <title>Apple Renamer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
         <script>
+            Vue.component("test-comp", {
+                template: "<div><a>{{up}}</a><br><a>{{down}}</a</div>", 
+                props: ["up", "down"]
+            });
             function init() {
-                new Vue({
+                vm1 = new Vue({
                     el: "#txt", 
                     data: {
                         msg: "XSX"
                     }
                 }); 
+                vm2 = new Vue({
+                    el: "#divi"
+                }); 
+                vm3 = new Vue({
+                    el: "#l", 
+                    data: {
+                        x: [3, 4, 5]
+                    }
+                }); 
+                vm4 = new Vue({
+                    el: "#_vm4", 
+                    data: {
+                        // data: [1, 45, 6, 23, 9]
+                        data: [{
+                            n: 1, 
+                            s: "one"
+                        }, {
+                            n: 10, 
+                            s: "ten"
+                        }]
+                    }
+                })
             }
         </script>
     </head>
     <body onload="init(); ">
         apple-renamer
         branch-ui
-        <a id="txt">
+        <a id="txt" class="vue-model">
             {{msg}}
         </a>
+        <br>
+        here
+        <br>
+        <div id="divi" class="vue-model">
+            <test-comp up="kku" down="kkd"></test-comp>
+            <test-comp up="kku-only"></test-comp>
+            <test-comp id="zz"></test-comp>
+        </div>
+        <br>
+        <div id="l">
+            <li v-for="xx in x">
+                {{xx}}
+                <h1>kk</h1>
+            </li>
+        </div>
+        <div id="_vm4">
+            <div v-for="datum in data">
+                <h1>{{datum.s}}</h1>
+                <textarea>{{datum.n}}</textarea>
+            </div>
+        </div>
+        end
     </body>
 </html>
