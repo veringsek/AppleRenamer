@@ -1,9 +1,23 @@
 <html>
     <head>
         <title>Apple Renamer</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+        <script>
+            function init() {
+                new Vue({
+                    el: "#txt", 
+                    data: {
+                        msg: "XSX"
+                    }
+                }); 
+            }
+        </script>
     </head>
-    <body>
+    <body onload="init(); ">
         apple-renamer
         branch-ui
+        <a id="txt">
+            {{msg}}
+        </a>
     </body>
 </html>
