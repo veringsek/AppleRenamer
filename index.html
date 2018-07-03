@@ -3,6 +3,8 @@
         <title>Apple Renamer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
         <script>
+            const fs = require("fs"); 
+
             Vue.component("test-comp", {
                 template: "<div><a>{{up}}</a><br><a>{{down}}</a</div>", 
                 props: ["up", "down"]
@@ -35,7 +37,18 @@
                             s: "ten"
                         }]
                     }
-                })
+                });
+
+                console.log(fs.readdir("c:/", (error, paths) => {
+                    console.log("kk"); 
+                    // for (var path of paths) {
+                    //     console.log(path); 
+                    //     vm3.data = {
+                    //         x: path
+                    //     }; 
+                    // }
+                    vm3.x = paths; 
+                })); 
             }
         </script>
     </head>
