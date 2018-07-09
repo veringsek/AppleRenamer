@@ -2,6 +2,7 @@
     <head>
         <title>Apple Renamer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+        <link rel="stylesheet" href="index.css">
         <script>
             const fs = require("fs"); 
 
@@ -39,46 +40,44 @@
                     }
                 });
 
+                vmFiles = new Vue({
+                    el: "#vueBody", 
+                    data: {
+                        files: [], 
+                        actions: []
+                    }
+                })
+
                 console.log(fs.readdir("c:/", (error, paths) => {
-                    console.log("kk"); 
-                    // for (var path of paths) {
-                    //     console.log(path); 
-                    //     vm3.data = {
-                    //         x: path
-                    //     }; 
-                    // }
-                    vm3.x = paths; 
+                    vmFiles.files = paths; 
                 })); 
             }
         </script>
     </head>
     <body onload="init(); ">
-        apple-renamer
-        branch-ui
-        <a id="txt" class="vue-model">
-            {{msg}}
-        </a>
-        <br>
-        here
-        <br>
-        <div id="divi" class="vue-model">
-            <test-comp up="kku" down="kkd"></test-comp>
-            <test-comp up="kku-only"></test-comp>
-            <test-comp id="zz"></test-comp>
-        </div>
-        <br>
-        <div id="l">
-            <li v-for="xx in x">
-                {{xx}}
-                <h1>kk</h1>
-            </li>
-        </div>
-        <div id="_vm4">
-            <div v-for="datum in data">
-                <h1>{{datum.s}}</h1>
-                <textarea>{{datum.n}}</textarea>
+        <div id="vueBody" class="main-container">
+            <div id="divFileList" class="main-block">
+                <div>
+                    <span class="at-mark">@</span>
+                    <span class="working-directory">C:\</span>
+                </div>
+                <div id="divFiles" class="list">
+                    <div class="files-item list-item" v-for="file in files">
+                        <a>icon-here</a>
+                        <span class="txt-file-name">{{file}}</span>
+                    </div>
+                </div>
+            </div>
+            <div id="divActionList" class="main-block">
+                <div id="divActions" class="list">
+                    <div class="actions-item list-item" v-for="action in actions">
+                        <div v-if="actoin.type === 'replace'">
+                            <span class="txt-action-replace-pattern">{{action.pattern}}</span><br>
+                            <span class="txt-action-replace-replacement">{{action.replacement}}</span>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
-        end
     </body>
 </html>
