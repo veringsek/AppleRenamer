@@ -44,7 +44,10 @@
                     el: "#vueBody", 
                     data: {
                         files: [], 
-                        actions: []
+                        actions: [], 
+                        newAction: {
+                            type: 'replace'
+                        }
                     }
                 })
 
@@ -75,6 +78,29 @@
                             <span class="txt-action-replace-pattern">{{action.pattern}}</span><br>
                             <span class="txt-action-replace-replacement">{{action.replacement}}</span>
                         </div>
+                    </div>
+                </div>
+                <div id="divNewAction" class="div-new-action">
+                    <div id="divNewActionExpand" class="expand-button">
+                        <span>+New Action</span>
+                    </div>
+                    <div id="divNewActionType" class="full-section">
+                        <select id="slcNewActionType" class="select full-section-fat-item">
+                            <option value="replace">Replace</option>
+                            <option value="filter">Filter</option>
+                            <option value="mark">Mark</option>
+                        </select>
+                    </div>
+                    <div v-if="newAction.type === 'replace'" class="div-new-action-attributes">
+                        <input type="text" id="txtNewActionReplacePattern"
+                            class="full-section-fat-item" />
+                        <br>
+                        <input type="text" id="txtNewActionReplaceReplacement"
+                            class="full-section-fat-item" />
+                    </div>
+                    <div id="divNewActionConfirm" class="full-section">
+                        <input type="button" id="btnNewActionConfirm" value="Confirm" 
+                            class="button full-section-fat-item" />
                     </div>
                 </div>
             </div>
