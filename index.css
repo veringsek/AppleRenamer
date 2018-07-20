@@ -103,6 +103,12 @@ body {
     margin-bottom: 5px; 
     width: 100%; 
 }
+.div-new-action-attributes {
+    display: none; 
+}
+.div-new-action-attributes.active {
+    display: block; 
+}
 #divNewAction {
     max-height: 40px; 
     transition: 0.5s; 
@@ -111,4 +117,8 @@ body {
 #divNewAction:hover {
     max-height: 100%;
     transition: 0.5s; 
+}
+.action-title {
+    color: grey; 
+    font-size: 9pt; 
 }

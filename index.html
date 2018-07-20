@@ -2,6 +2,7 @@
     <head>
         <title>Apple Renamer</title>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+        <script src="index.js"></script>
         <link rel="stylesheet" href="index.css">
         <script>
             const fs = require("fs"); 
@@ -44,7 +45,14 @@
                     el: "#vueBody", 
                     data: {
                         files: [], 
-                        actions: [], 
+                        actions: [{
+                            type: "filter", 
+                            pattern: ".*"
+                        }, {
+                            type: "replace", 
+                            pattern: "(.*)", 
+                            replacement: "$1"
+                        }], 
                         newAction: {
                             type: 'replace'
                         }
@@ -74,9 +82,14 @@
             <div id="divActionList" class="main-block">
                 <div id="divActions" class="list">
                     <div class="actions-item list-item" v-for="action in actions">
-                        <div v-if="actoin.type === 'replace'">
-                            <span class="txt-action-replace-pattern">{{action.pattern}}</span><br>
-                            <span class="txt-action-replace-replacement">{{action.replacement}}</span>
+                        <div v-if="action.type === 'replace'">
+                            <span class="action-title">Replace</span><br>
+                            <span class="action-replace-pattern">{{action.pattern}}</span><br>
+                            <span class="action-replace-replacement">{{action.replacement}}</span>
+                        </div>
+                        <div v-if="action.type === 'filter'">
+                            <span class="action-title">Filter</span><br>
+                            <span class="action-filter-pattern">{{action.pattern}}</span>
                         </div>
                     </div>
                 </div>
@@ -85,13 +98,14 @@
                         <span>+New Action</span>
                     </div>
                     <div id="divNewActionType" class="full-section">
-                        <select id="slcNewActionType" class="select full-section-fat-item">
+                        <select id="slcNewActionType" class="select full-section-fat-item"
+                            onchange="changeNewActionType(); ">
                             <option value="replace">Replace</option>
                             <option value="filter">Filter</option>
                             <option value="mark">Mark</option>
                         </select>
                     </div>
-                    <div v-if="newAction.type === 'replace'" class="div-new-action-attributes">
+                    <div v-bind:class="{active: newAction.type === 'replace'}" class="div-new-action-attributes">
                         <input type="text" id="txtNewActionReplacePattern"
                             class="full-section-fat-item" />
                         <br>
@@ -100,7 +114,7 @@
                     </div>
                     <div id="divNewActionConfirm" class="full-section">
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 
-                            class="button full-section-fat-item" />
+                            class="button full-section-fat-item" onclick="addNewAction(); " />
                     </div>
                 </div>
             </div>
