@@ -37,60 +37,57 @@
         </script>
     </head>
     <body onload="init(); ">
-        <div id="vueBody" class="main-container">
-            <div id="divFileList" class="main-block">
-                <div>
-                    <img class="at-icon" src="img/at.png" />
-                    <span class="working-directory">C:\</span>
+        <div id="vueBody" class="main-blocks__container">
+            <div id="divFileList" class="main-blocks__block">
+                <div class="flxp-rcc at__body">
+                    <img class="at__icon" src="img/at.png" />
+                    <input type="text" id="txtWorkingDir" class="flxc at__workingdir" value="C:\" />
                 </div>
-                <div id="divFiles" class="list">
-                    <div class="files-item list-item" v-for="file in files">
-                        <!-- <a>icon-here</a> -->
-                        <span class="txt-file-name">{{file}}</span>
+                <div id="divFiles" class="files__body list__container">
+                    <div class="files__item list__item" v-for="file in files">
+                        <span class="files__name">{{file}}</span>
                     </div>
                 </div>
             </div>
-            <div id="divActionList" class="main-block">
-                <div id="divActions" class="list">
-                    <div class="actions-item list-item" v-for="action in actions">
+            <div id="divActionList" class="main-blocks__block">
+                <div id="divActions" class="actions__body list__container">
+                    <div class="actions-item list__item" v-for="action in actions">
                         <div v-if="action.type === 'replace'">
-                            <span class="action-title">Replace</span><br>
-                            <span class="action-replace-pattern">{{action.pattern}}</span><br>
-                            <span class="action-replace-replacement">{{action.replacement}}</span>
+                            <span class="action__title">Replace</span><br>
+                            <span class="action__replace-pattern">{{action.pattern}}</span><br>
+                            <span class="action__replace-replacement">{{action.replacement}}</span>
                         </div>
                         <div v-if="action.type === 'filter'">
-                            <span class="action-title">Filter</span><br>
-                            <span class="action-filter-pattern">{{action.pattern}}</span>
+                            <span class="action__title">Filter</span><br>
+                            <span class="action__filter-pattern">{{action.pattern}}</span>
                         </div>
                     </div>
                 </div>
-                <div id="divNewAction" class="div-new-action">
+                <div id="divNewAction" class="new-action">
                     <div id="divNewActionExpand" class="expand-button">
                         <span>+New Action</span>
                     </div>
-                    <div id="divNewActionType" class="full-section">
-                        <select id="slcNewActionType" class="select full-section-fat-item"
+                    <div id="divNewActionType" class="flxp-rcc">
+                        <select id="slcNewActionType" class="select flxc"
                             onchange="changeNewActionType(); ">
                             <option value="replace">Replace</option>
                             <option value="filter">Filter</option>
                             <option value="mark">Mark</option>
                         </select>
                     </div>
-                    <div v-bind:class="{active: newAction.type === 'replace'}" class="div-new-action-attributes">
-                        <div class="new-action-attributes-body">
-                            <img class="new-action-attributes-icon" src="img/replace-find.png" />
-                            <div class="new-action-attributes-inputs">
-                                <input type="text" id="txtNewActionReplacePattern"
-                                    class="full-section-fat-item" />
+                    <div v-bind:class="{active: newAction.type === 'replace'}" class="new-action__attributes">
+                        <div class="new-action__attributes-body">
+                            <img class="new-action__attributes-icon" src="img/replace-find.png" />
+                            <div class="new-action__attributes-inputs">
+                                <input type="text" id="txtNewActionReplacePattern" class="flxc" />
                                 <br>
-                                <input type="text" id="txtNewActionReplaceReplacement"
-                                    class="full-section-fat-item" />
+                                <input type="text" id="txtNewActionReplaceReplacement" class="flxc" />
                             </div>
                         </div>
                     </div>
-                    <div id="divNewActionConfirm" class="full-section">
+                    <div id="divNewActionConfirm" class="flxp-rcc">
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 
-                            class="button full-section-fat-item" onclick="addNewAction(); " />
+                            class="button flxc" onclick="addNewAction(); " />
                     </div>
                 </div>
             </div>

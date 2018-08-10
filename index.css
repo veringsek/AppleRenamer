@@ -1,33 +1,38 @@
 * {
     box-sizing: border-box; 
 }
-.flx {
+.flxp, .flxp-rcc {
     display: flex; 
     flex-direction: row; 
-    flex-wrap: nowrap; 
     justify-content: center; 
-    align-items: stretch; 
+    align-items: center; 
+    flex-wrap: nowrap; 
+}
+.flxc, .flxc-1 {
+    flex: 1; 
 }
 
 body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
 }
-.at-mark {
-    font-size: 24pt; 
-    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
-    font-weight: bold; 
-    color: gold; 
+.at__body {
+    padding: 8px; 
 }
-.at-icon {
+.at__icon {
     height: 32px; 
     width: 32px;
-    margin: 5px; 
+    margin: 8px; 
 }
-.txt-file-name {
+.at__workingdir {
+    font-size: 18pt; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.files__name {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     font-size: 16pt; 
 }
-.main-container {
+.main-blocks__container {
     display: flex; 
     flex-direction: row; 
     flex-wrap: nowrap; 
@@ -35,7 +40,7 @@ body {
     align-items: stretch;
     height: 100%;
 }
-.main-block {
+.main-blocks__block {
     border-radius: 3px; 
     box-shadow: 0px 0px 5px black; 
     margin: 5px; 
@@ -47,11 +52,11 @@ body {
     justify-content: flex-start;
     align-items: stretch; 
 }
-.list {
+.list__container {
     overflow-y: auto; 
     flex: 1; 
 }
-.list-item {
+.list__item {
     border-radius: 3px; 
     border: 2px solid black; 
     margin: 10px; 
@@ -108,7 +113,7 @@ body {
 .full-section-fat-item {
     flex: 1; 
 }
-.div-new-action-attributes input[type=text] {
+.new-action__attributes input[type=text] {
     font-size: 16pt; 
     padding-left: 5px; 
     padding-right: 5px;
@@ -116,24 +121,24 @@ body {
     margin-bottom: 5px; 
     width: 100%; 
 }
-.div-new-action-attributes {
+.new-action__attributes {
     display: none; 
 }
-.div-new-action-attributes.active {
+.new-action__attributes.active {
     display: block; 
 }
-.new-action-attributes-icon {
+.new-action__attributes-icon {
     height: 64px; 
     width: 64px; 
     margin: 8px; 
 }
-.new-action-attributes-body {
+.new-action__attributes-body {
     display: flex; 
     flex-direction: row;
     flex-wrap: nowrap; 
     justify-content: left; 
 }
-.new-action-attributes-inputs {
+.new-action__attributes-inputs {
     flex: 1; 
 }
 #divNewAction {
@@ -145,7 +150,7 @@ body {
     max-height: 100%;
     transition: 0.5s; 
 }
-.action-title {
+.action__title {
     color: grey; 
     font-size: 9pt; 
 }
