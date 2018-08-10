@@ -45,7 +45,13 @@
                 </div>
                 <div id="divFiles" class="files__body list__container">
                     <div class="files__item list__item" v-for="file in files">
-                        <span class="files__name">{{file}}</span>
+                        <div class="flxp-rcc">
+                            <input type="checkbox" class="files__select" />
+                            <div class="flxc">
+                                <span class="files__origin-name">{{file}}</span><br>
+                                <span class="files__modified-name">{{file}}</span>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>

@@ -8,6 +8,13 @@
     align-items: center; 
     flex-wrap: nowrap; 
 }
+.flxp-rcs {
+    display: flex; 
+    flex-direction: row;
+    justify-content: center; 
+    align-items: stretch;
+    flex-wrap: nowrap; 
+}
 .flxc, .flxc-1 {
     flex: 1; 
 }
@@ -15,6 +22,36 @@
 body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
 }
+.button {
+    font-size: 14pt; 
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+    background: white; 
+    border-radius: 3px; 
+    border: 3px solid black;
+    padding: 3px; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    transition: 0.3s; 
+}
+.button:hover {
+    color: white; 
+    background-color: black; 
+    transition: 0.3s; 
+}
+.button:focus {
+    outline: 0; 
+}
+.select {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+    font-size: 16pt; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    text-align: center; 
+}
+.select:focus {
+    outline: 0; 
+}
+
 .at__body {
     padding: 8px; 
 }
@@ -28,9 +65,20 @@ body {
     margin-left: 5px; 
     margin-right: 5px; 
 }
-.files__name {
+.files__select {
+    width: 28px; 
+    height: 28px;
+    margin: 8px; 
+    background: red; 
+}
+.files__origin-name {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
-    font-size: 16pt; 
+    font-size: 10pt; 
+    color: grey; 
+}
+.files__modified-name {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 14pt; 
 }
 .main-blocks__container {
     display: flex; 
@@ -75,43 +123,9 @@ body {
     margin-bottom: 5px; 
     cursor: default;
 }
-.button {
-    font-size: 14pt; 
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
-    background: white; 
-    border-radius: 3px; 
-    border: 3px solid black;
-    padding: 3px; 
-    margin-top: 5px;
-    margin-bottom: 5px; 
-    transition: 0.3s; 
-}
-.button:hover {
-    color: white; 
-    background-color: black; 
-    transition: 0.3s; 
-}
-.button:focus {
-    outline: 0; 
-}
-.select {
-    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
-    font-size: 16pt; 
-    margin-top: 5px;
-    margin-bottom: 5px; 
-    text-align: center; 
-}
-.select:focus {
-    outline: 0; 
-}
-.full-section {
-    display: flex; 
-    flex-direction: row;
-    flex-wrap: nowrap;
-    justify-content: center; 
-}
-.full-section-fat-item {
-    flex: 1; 
+.action__title {
+    color: grey; 
+    font-size: 9pt; 
 }
 .new-action__attributes input[type=text] {
     font-size: 16pt; 
@@ -149,8 +163,4 @@ body {
 #divNewAction:hover {
     max-height: 100%;
     transition: 0.5s; 
-}
-.action__title {
-    color: grey; 
-    font-size: 9pt; 
 }
