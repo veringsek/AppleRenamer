@@ -12,35 +12,6 @@
                 props: ["up", "down"]
             });
             function init() {
-                vm1 = new Vue({
-                    el: "#txt", 
-                    data: {
-                        msg: "XSX"
-                    }
-                }); 
-                vm2 = new Vue({
-                    el: "#divi"
-                }); 
-                vm3 = new Vue({
-                    el: "#l", 
-                    data: {
-                        x: [3, 4, 5]
-                    }
-                }); 
-                vm4 = new Vue({
-                    el: "#_vm4", 
-                    data: {
-                        // data: [1, 45, 6, 23, 9]
-                        data: [{
-                            n: 1, 
-                            s: "one"
-                        }, {
-                            n: 10, 
-                            s: "ten"
-                        }]
-                    }
-                });
-
                 vmFiles = new Vue({
                     el: "#vueBody", 
                     data: {
@@ -69,12 +40,12 @@
         <div id="vueBody" class="main-container">
             <div id="divFileList" class="main-block">
                 <div>
-                    <span class="at-mark">@</span>
+                    <img class="at-icon" src="img/at.png" />
                     <span class="working-directory">C:\</span>
                 </div>
                 <div id="divFiles" class="list">
                     <div class="files-item list-item" v-for="file in files">
-                        <a>icon-here</a>
+                        <!-- <a>icon-here</a> -->
                         <span class="txt-file-name">{{file}}</span>
                     </div>
                 </div>
@@ -106,11 +77,16 @@
                         </select>
                     </div>
                     <div v-bind:class="{active: newAction.type === 'replace'}" class="div-new-action-attributes">
-                        <input type="text" id="txtNewActionReplacePattern"
-                            class="full-section-fat-item" />
-                        <br>
-                        <input type="text" id="txtNewActionReplaceReplacement"
-                            class="full-section-fat-item" />
+                        <div class="new-action-attributes-body">
+                            <img class="new-action-attributes-icon" src="img/replace-find.png" />
+                            <div class="new-action-attributes-inputs">
+                                <input type="text" id="txtNewActionReplacePattern"
+                                    class="full-section-fat-item" />
+                                <br>
+                                <input type="text" id="txtNewActionReplaceReplacement"
+                                    class="full-section-fat-item" />
+                            </div>
+                        </div>
                     </div>
                     <div id="divNewActionConfirm" class="full-section">
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 

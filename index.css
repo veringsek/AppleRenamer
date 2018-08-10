@@ -1,6 +1,14 @@
 * {
     box-sizing: border-box; 
 }
+.flx {
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: nowrap; 
+    justify-content: center; 
+    align-items: stretch; 
+}
+
 body {
     font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
 }
@@ -9,6 +17,11 @@ body {
     font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif; 
     font-weight: bold; 
     color: gold; 
+}
+.at-icon {
+    height: 32px; 
+    width: 32px;
+    margin: 5px; 
 }
 .txt-file-name {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
@@ -108,6 +121,20 @@ body {
 }
 .div-new-action-attributes.active {
     display: block; 
+}
+.new-action-attributes-icon {
+    height: 64px; 
+    width: 64px; 
+    margin: 8px; 
+}
+.new-action-attributes-body {
+    display: flex; 
+    flex-direction: row;
+    flex-wrap: nowrap; 
+    justify-content: left; 
+}
+.new-action-attributes-inputs {
+    flex: 1; 
 }
 #divNewAction {
     max-height: 40px; 
