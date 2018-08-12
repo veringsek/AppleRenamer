@@ -61,6 +61,7 @@ body {
     margin: 8px; 
 }
 .at__workingdir {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     font-size: 18pt; 
     margin-left: 5px; 
     margin-right: 5px; 
@@ -71,13 +72,16 @@ body {
     margin: 8px; 
     background: red; 
 }
-.files__origin-name {
+.files__number {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 10pt; 
+    color: black; 
+}
+.files__origin-name {
     font-size: 10pt; 
     color: grey; 
 }
 .files__modified-name {
-    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     font-size: 14pt; 
 }
 .main-blocks__container {
@@ -127,7 +131,7 @@ body {
     color: grey; 
     font-size: 9pt; 
 }
-.new-action__attributes input[type=text] {
+.new-action-attributes input[type=text] {
     font-size: 16pt; 
     padding-left: 5px; 
     padding-right: 5px;
@@ -135,24 +139,25 @@ body {
     margin-bottom: 5px; 
     width: 100%; 
 }
-.new-action__attributes {
+.new-action-attributes {
     display: none; 
 }
-.new-action__attributes.active {
+.new-action-attributes.active {
     display: block; 
 }
-.new-action__attributes-icon {
-    height: 64px; 
-    width: 64px; 
-    margin: 8px; 
+.new-action-attributes__icon {
+    height: 48px; 
+    width: 48px; 
+    margin: 24px; 
 }
-.new-action__attributes-body {
+.new-action-attributes__body {
     display: flex; 
     flex-direction: row;
-    flex-wrap: nowrap; 
     justify-content: left; 
+    align-items: center; 
+    flex-wrap: nowrap; 
 }
-.new-action__attributes-inputs {
+.new-action-attributes__inputs {
     flex: 1; 
 }
 #divNewAction {

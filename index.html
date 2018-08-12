@@ -44,10 +44,11 @@
                     <input type="text" id="txtWorkingDir" class="flxc at__workingdir" value="C:\" />
                 </div>
                 <div id="divFiles" class="files__body list__container">
-                    <div class="files__item list__item" v-for="file in files">
+                    <div class="files__item list__item" v-for="(file, f) in files">
                         <div class="flxp-rcc">
                             <input type="checkbox" class="files__select" />
                             <div class="flxc">
+                                <span class="files__number">{{f + 1}}: </span>
                                 <span class="files__origin-name">{{file}}</span><br>
                                 <span class="files__modified-name">{{file}}</span>
                             </div>
@@ -57,15 +58,18 @@
             </div>
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
-                    <div class="actions-item list__item" v-for="action in actions">
-                        <div v-if="action.type === 'replace'">
-                            <span class="action__title">Replace</span><br>
-                            <span class="action__replace-pattern">{{action.pattern}}</span><br>
-                            <span class="action__replace-replacement">{{action.replacement}}</span>
-                        </div>
-                        <div v-if="action.type === 'filter'">
-                            <span class="action__title">Filter</span><br>
-                            <span class="action__filter-pattern">{{action.pattern}}</span>
+                    <div class="actions-item list__item flxp-rcc" v-for="action in actions">
+                        <input type="checkbox" class="files__select" />
+                        <div class="flxc">
+                            <div v-if="action.type === 'replace'">
+                                <span class="action__title">Replace</span><br>
+                                <span class="action__replace-pattern">{{action.pattern}}</span><br>
+                                <span class="action__replace-replacement">{{action.replacement}}</span>
+                            </div>
+                            <div v-if="action.type === 'filter'">
+                                <span class="action__title">Filter</span><br>
+                                <span class="action__filter-pattern">{{action.pattern}}</span>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -74,17 +78,16 @@
                         <span>+New Action</span>
                     </div>
                     <div id="divNewActionType" class="flxp-rcc">
-                        <select id="slcNewActionType" class="select flxc"
-                            onchange="changeNewActionType(); ">
+                        <select id="slcNewActionType" class="select flxc" v-model="newAction.type">
                             <option value="replace">Replace</option>
                             <option value="filter">Filter</option>
                             <option value="mark">Mark</option>
                         </select>
                     </div>
-                    <div v-bind:class="{active: newAction.type === 'replace'}" class="new-action__attributes">
-                        <div class="new-action__attributes-body">
-                            <img class="new-action__attributes-icon" src="img/replace-find.png" />
-                            <div class="new-action__attributes-inputs">
+                    <div v-bind:class="{active: newAction.type === 'replace'}" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/replace-find.png" />
+                            <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionReplacePattern" class="flxc" />
                                 <br>
                                 <input type="text" id="txtNewActionReplaceReplacement" class="flxc" />

@@ -1,8 +1,3 @@
-function changeNewActionType() {
-    var type = slcNewActionType.options[slcNewActionType.selectedIndex].value; 
-    vmFiles.newAction.type = type; 
-}
-
 function addNewAction() {
     var type = vmFiles.newAction.type; 
     switch (type) {
