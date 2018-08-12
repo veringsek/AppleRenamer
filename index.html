@@ -12,7 +12,7 @@
                 props: ["up", "down"]
             });
             function init() {
-                vmFiles = new Vue({
+                vmBody = new Vue({
                     el: "#vueBody", 
                     data: {
                         files: [], 
@@ -30,9 +30,18 @@
                     }
                 })
 
-                console.log(fs.readdir("c:/", (error, paths) => {
-                    vmFiles.files = paths; 
-                })); 
+                fs.readdir("c:/", (error, filenames) => {
+                    // vmFiles.files = filenames; 
+                    var files = []; 
+                    for (var filename of filenames) {
+                        var file = {}; 
+                        file["dir"] = "c:/"; 
+                        file["name"] = filename; 
+                        file["checked"] = true; 
+                        files.push(file); 
+                    }
+                    vmBody.files = files; 
+                }); 
             }
         </script>
     </head>
@@ -46,11 +55,12 @@
                 <div id="divFiles" class="files__body list__container">
                     <div class="files__item list__item" v-for="(file, f) in files">
                         <div class="flxp-rcc">
-                            <input type="checkbox" class="files__select" />
+                            <input type="checkbox" class="files__select"
+                                v-bind:checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
                                 <span class="files__number">{{f + 1}}: </span>
-                                <span class="files__origin-name">{{file}}</span><br>
-                                <span class="files__modified-name">{{file}}</span>
+                                <span class="files__origin-name" v-bind:title="file.dir">{{file.name}}</span><br>
+                                <span class="files__modified-name">{{file.name}}</span>
                             </div>
                         </div>
                     </div>
