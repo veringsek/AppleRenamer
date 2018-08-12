@@ -22,11 +22,25 @@
                             pattern: ".*"
                         }, {
                             type: "replace", 
-                            pattern: "(.*)", 
-                            replacement: "$1"
+                            pattern: "R", 
+                            replacement: "--KKK--"
                         }], 
                         newAction: {
                             type: 'replace'
+                        }
+                    }, 
+                    watch: {
+                        files: {
+                            handler: (value, old) => {
+                                modifyFiles(); 
+                            }, 
+                            deep: true
+                        }, 
+                        actions: {
+                            handler: (value, old) => {
+                                modifyFiles(); 
+                            }, 
+                            deep: true
                         }
                     }
                 })
@@ -58,9 +72,15 @@
                             <input type="checkbox" class="files__select"
                                 v-bind:checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
-                                <span class="files__number" v-if="file.checked">{{getFileNumber(f)}}: </span>
-                                <span class="files__origin-name" v-bind:title="file.dir">{{file.name}}</span><br>
-                                <span class="files__modified-name" v-if="file.checked">{{file.name}}</span>
+                                <span class="files__number" v-if="file.checked">
+                                    {{getFileNumber(f)}}: 
+                                </span>
+                                <span class="files__original-name" v-bind:title="file.dir">
+                                    {{file.name}}
+                                </span><br>
+                                <span class="files__modified-name" v-if="file.checked">
+                                    {{file.modified}}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -73,13 +93,19 @@
                             class="files__select" />
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
-                                <span class="action__title">Replace</span><br>
-                                <span class="action__replace-pattern">{{action.pattern}}</span><br>
-                                <span class="action__replace-replacement">{{action.replacement}}</span>
+                                <span class="action__attribute action__title">Replace</span><br>
+                                <span class="action__attribute action__replace-pattern">
+                                    {{action.pattern}}
+                                </span><br>
+                                <span class="action__attribute action__replace-replacement">
+                                    {{action.replacement}}
+                                </span>
                             </div>
                             <div v-if="action.type === 'filter'">
-                                <span class="action__title">Filter</span><br>
-                                <span class="action__filter-pattern">{{action.pattern}}</span>
+                                <span class="action__attribute action__title">Filter</span><br>
+                                <span class="action__attribute action__filter-pattern">
+                                    {{action.pattern}}
+                                </span>
                             </div>
                         </div>
                     </div>
@@ -99,9 +125,11 @@
                         <div class="new-action-attributes__body">
                             <img class="new-action-attributes__icon" src="img/replace-find.png" />
                             <div class="new-action-attributes__inputs">
-                                <input type="text" id="txtNewActionReplacePattern" class="flxc" />
+                                <input type="text" id="txtNewActionReplacePattern" class="flxc"
+                                    placeholder="Find" />
                                 <br>
-                                <input type="text" id="txtNewActionReplaceReplacement" class="flxc" />
+                                <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
+                                    placeholder="Replace with" />
                             </div>
                         </div>
                     </div>

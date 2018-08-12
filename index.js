@@ -18,6 +18,38 @@ function addNewActionReplace() {
     }); 
 }
 
+function modifyName(action, file) {
+    switch (action.type) {
+        case "replace": 
+            modifyNameReplace(action, file); 
+            break; 
+    }
+}
+
+function modifyNameReplace(action, file) {
+    console.log(file.modified); 
+    file.modified = file.modified.replace(new RegExp(action.pattern), action.replacement); 
+    console.log("===>>> " + file.modified); 
+}
+
+function modifyFile(index) {
+    var file = vmBody.files[index]; 
+    file.modified = file.name; 
+    for (var action of vmBody.actions) {
+        if (!action.checked) {
+            continue; 
+        }
+        modifyName(action, file); 
+    }
+}
+
+function modifyFiles() {
+    var files = vmBody.files; 
+    for (var f = 0; f < files.length; f++) {
+        modifyFile(f); 
+    }
+}
+
 function getFileNumber(index) {
     var files = vmBody.files; 
     var number = 0; 
@@ -26,5 +58,6 @@ function getFileNumber(index) {
             number += 1; 
         }
     }
+    files[index].number = number; 
     return number; 
 }

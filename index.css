@@ -78,7 +78,7 @@ body {
     font-size: 10pt; 
     color: black; 
 }
-.files__origin-name {
+.files__original-name {
     font-size: 10pt; 
     color: grey; 
 }
@@ -127,6 +127,9 @@ body {
     margin-top: 5px;
     margin-bottom: 5px; 
     cursor: default;
+}
+.action__attribute {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
 }
 .action__title {
     color: grey; 
