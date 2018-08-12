@@ -32,6 +32,7 @@
                     watch: {
                         files: {
                             handler: (value, old) => {
+                                getFileNumbers(); 
                                 modifyFiles(); 
                             }, 
                             deep: true
@@ -73,7 +74,7 @@
                                 v-bind:checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
                                 <span class="files__number" v-if="file.checked">
-                                    {{getFileNumber(f)}}: 
+                                    {{file.number}}: 
                                 </span>
                                 <span class="files__original-name" v-bind:title="file.dir">
                                     {{file.name}}

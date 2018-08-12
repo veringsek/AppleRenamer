@@ -50,6 +50,13 @@ function modifyFiles() {
     }
 }
 
+function getFileNumbers() {
+    var files = vmBody.files; 
+    for (var f = 0; f < files.length; f++) {
+        getFileNumber(f); 
+    }
+}
+
 function getFileNumber(index) {
     var files = vmBody.files; 
     var number = 0; 
