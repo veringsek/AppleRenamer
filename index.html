@@ -18,6 +18,7 @@
                         files: [], 
                         actions: [{
                             type: "filter", 
+                            checked: true, 
                             pattern: ".*"
                         }, {
                             type: "replace", 
@@ -31,13 +32,12 @@
                 })
 
                 fs.readdir("c:/", (error, filenames) => {
-                    // vmFiles.files = filenames; 
                     var files = []; 
                     for (var filename of filenames) {
                         var file = {}; 
-                        file["dir"] = "c:/"; 
-                        file["name"] = filename; 
-                        file["checked"] = true; 
+                        file.dir = "c:/"; ///////////
+                        file.name = filename; 
+                        file.checked = true; 
                         files.push(file); 
                     }
                     vmBody.files = files; 
@@ -58,9 +58,9 @@
                             <input type="checkbox" class="files__select"
                                 v-bind:checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
-                                <span class="files__number">{{f + 1}}: </span>
+                                <span class="files__number" v-if="file.checked">{{getFileNumber(f)}}: </span>
                                 <span class="files__origin-name" v-bind:title="file.dir">{{file.name}}</span><br>
-                                <span class="files__modified-name">{{file.name}}</span>
+                                <span class="files__modified-name" v-if="file.checked">{{file.name}}</span>
                             </div>
                         </div>
                     </div>
@@ -69,7 +69,8 @@
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
                     <div class="actions-item list__item flxp-rcc" v-for="action in actions">
-                        <input type="checkbox" class="files__select" />
+                        <input type="checkbox" v-bind:checked="action.checked" v-model:checked="action.checked"
+                            class="files__select" />
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
                                 <span class="action__title">Replace</span><br>
