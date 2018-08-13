@@ -23,17 +23,27 @@
                             pattern: ".*"
                         }, {
                             type: "replace", 
-                            pattern: "R", 
-                            replacement: "--KKK--"
+                            checked: true, 
+                            pattern: "hiberfil.sys", 
+                            replacement: "pagefile.sys"
                         }], 
                         actionTypes: {
                             replace: {
                                 type: "replace", 
                                 name: "Replace", 
                                 modify: (file, action) => {
-                                    file.modified = file.modified.replace(
+                                    var modified = file.modified.replace(
                                         new RegExp(action.pattern), action.replacement
                                     ); 
+                                    file.warning = ""; 
+                                    for (var other of vm.files) {
+                                        if (other === file) {
+                                            break; 
+                                        } else if (other.modified === modified) {
+                                            file.warning = "conflict"; 
+                                        }
+                                    }
+                                    file.modified = modified; 
                                 }, 
                                 create: () => {
                                     var pattern = txtNewActionReplacePattern.value; 
@@ -63,6 +73,26 @@
                         }, 
                         newAction: {
                             type: 'replace'
+                        }, 
+                        warnings: {
+                            raise: (a, b) => {
+                                var wa = vm.warnings[a]; 
+                                if (wa === undefined) {
+                                    wa = 0; 
+                                }
+                                var wb = vm.warnings[b]; 
+                                if (wb === undefined) {
+                                    wb = 0; 
+                                }
+                                if (wa > wb) {
+                                    return a; 
+                                } else {
+                                    return b
+                                }
+                            }, 
+                            none: 0, 
+                            unchanged: 10, 
+                            conflict: 1000
                         }
                     }, 
                     watch: {
@@ -117,6 +147,20 @@
                                 </span><br>
                                 <span class="files__modified-name" v-if="file.checked">
                                     {{file.modified}}
+                                </span>
+                                <span v-if="file.checked">
+                                    <br v-if="file.warning !== ''">
+                                    <span class="files__warning--slight">
+                                        <span v-if="file.warning === 'unchanged'">
+                                            File name is not going to change. 
+                                        </span>
+                                    </span>
+                                    <span class="files__warning--severe">
+                                        <span v-if="file.warning === 'conflict'"
+                                            title="This name will conflict with one of the previous files. ">
+                                            CONFLICT
+                                        </span>
+                                    </span>
                                 </span>
                             </div>
                         </div>

@@ -6,11 +6,15 @@ function preview() {
         }
         file.number = number; 
         file.modified = file.name; 
+        file.warning = "none"; 
         for (var action of vm.actions) {
             if (!action.checked) {
                 continue; 
             }
             vm.actionTypes[action.type].modify(file, action); 
+        }
+        if (file.modified === file.name) {
+            file.warning = vm.warnings.raise("unchanged", file.warning); 
         }
     }
 }
