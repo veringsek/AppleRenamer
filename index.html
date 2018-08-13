@@ -32,18 +32,10 @@
                                 type: "replace", 
                                 name: "Replace", 
                                 modify: (file, action) => {
-                                    var modified = file.modified.replace(
+                                    file.modified = file.modified.replace(
                                         new RegExp(action.pattern), action.replacement
                                     ); 
-                                    file.warning = "none"; 
-                                    for (var other of vm.files) {
-                                        if (other === file) {
-                                            break; 
-                                        } else if (other.modified === modified) {
-                                            file.warning = "conflict"; 
-                                        }
-                                    }
-                                    file.modified = modified; 
+                                    console.log(file.name + "===>>>" + file.modified); 
                                 }, 
                                 create: () => {
                                     var pattern = txtNewActionReplacePattern.value; 
