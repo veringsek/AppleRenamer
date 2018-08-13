@@ -30,22 +30,30 @@
                         }, {
                             type: "replace", 
                             checked: true, 
-                            pattern: "hiberfil.sys", 
-                            replacement: "pagefile.sys"
+                            pattern: "^.*$", 
+                            replacement: "[:x:]"
                         }], 
                         actionTypes: {
                             replace: {
                                 type: "replace", 
                                 name: "Replace", 
-                                modify: (file, action) => {
-                                    var pattern; 
-                                    if (action.puretext) {
-                                        pattern = action.pattern; 
-                                    } else {
-                                        pattern = new RegExp(action.pattern); 
+                                act: (file, action) => {
+                                    var pattern = action.pattern; 
+                                    if (!action.puretext) {
+                                        pattern = new RegExp(action.pattern, "g"); 
+                                    }
+                                    var replacement = action.replacement; 
+                                    for (var preaction of vm.preactions) {
+                                        console.log(replacement); 
+                                        replacement = replacement.replace(
+                                            preaction.mark, 
+                                            vm.actionTypes.mark.act(file, preaction)
+                                        ); 
+                                        console.log(vm.actionTypes.mark.act(file, preaction)); 
+                                        console.log(replacement); 
                                     }
                                     file.modified = file.modified.replace(
-                                        pattern, action.replacement
+                                        pattern, replacement
                                     ); 
                                 }, 
                                 create: () => {
@@ -64,7 +72,7 @@
                             filter: {
                                 type: "filter", 
                                 name: "Filter", 
-                                modify: (file, action) => {
+                                act: (file, action) => {
                                     var pattern; 
                                     var filtered; 
                                     if (action.puretext) {
@@ -93,8 +101,14 @@
                             mark: {
                                 type: "mark", 
                                 name: "Mark", 
-                                modify: (file, action) => {
-                                    return; 
+                                act: (file, action) => {
+                                    switch (action.reference) {
+                                        case "number": 
+                                            return file.number; 
+                                            break; 
+                                        case "ext": 
+                                            break; 
+                                    }
                                 }, 
                                 create: () => {
                                     var reference = slcNewActoinMarkReference.value; 

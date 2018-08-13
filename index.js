@@ -13,7 +13,7 @@ function preview() {
             if (!action.checked) {
                 continue; 
             }
-            vm.actionTypes[action.type].modify(file, action); 
+            vm.actionTypes[action.type].act(file, action); 
             if (file.filtered) {
                 file.modified = file.name; 
                 break; 

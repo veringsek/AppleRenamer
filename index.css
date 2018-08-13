@@ -173,6 +173,21 @@ body {
     margin-bottom: 5px; 
     cursor: default;
 }
+.preactions-item {
+    border-color: green; 
+}
+.action-mark__reference {
+    font-weight: bold; 
+    color: white; 
+    background-color: green; 
+    padding-left: 15px; 
+    padding-right: 15px; 
+    padding-top: 3px; 
+    padding-bottom: 3px; 
+    margin: 3px; 
+    user-select: none;
+    cursor: default;
+}
 .action__attribute {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     border-width: 0px; 
@@ -188,18 +203,6 @@ body {
 .action-mark__mark {
     color: green; 
     font-weight: bold; 
-}
-.action-mark__reference {
-    font-weight: bold; 
-    color: white; 
-    background-color: green; 
-    padding-left: 15px; 
-    padding-right: 15px; 
-    padding-top: 3px; 
-    padding-bottom: 3px; 
-    margin: 3px; 
-    user-select: none;
-    cursor: default;
 }
 .new-action-attributes input[type=text] {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
