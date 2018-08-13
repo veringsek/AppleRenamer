@@ -26,6 +26,11 @@
                             checked: true, 
                             pattern: "hiberfil.sys", 
                             replacement: "pagefile.sys"
+                        }, {
+                            type: "mark", 
+                            checked: true, 
+                            reference: "number", 
+                            mark: "[:x:]"
                         }], 
                         actionTypes: {
                             replace: {
@@ -89,6 +94,16 @@
                                 name: "Mark", 
                                 modify: (file, action) => {
                                     return; 
+                                }, 
+                                create: () => {
+                                    var reference = slcNewActoinMarkReference.value; 
+                                    var mark = txtNewActionMarkMark.value; 
+                                    vm.actions.push({
+                                        type: "mark", 
+                                        checked: true, 
+                                        reference: reference, 
+                                        mark: mark
+                                    })
                                 }
                             }
                         }, 
@@ -218,10 +233,12 @@
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Use Pure Text Matching
                                 </label><br>
-                                <input type="text" class="action__attribute action__replace-pattern"
-                                    :value="action.pattern" v-model="action.pattern" /><br>
-                                <input type="text" class="action__attribute action__replace-replacement"
-                                    :value="action.replacement" v-model="action.replacement" />
+                                <div class="flxp-ccs">
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.pattern" v-model="action.pattern" />
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.replacement" v-model="action.replacement" />
+                                </div>
                             </div>
                             <div v-if="action.type === 'filter'">
                                 <span class="action__title">Filter</span>
@@ -229,8 +246,24 @@
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Use Pure Text Matching
                                 </label><br>
-                                <input type="text" class="action__attribute action__filter-pattern"
-                                    :value="action.pattern" v-model="action.pattern" />
+                                <div class="flxp-ccs">
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.pattern" v-model="action.pattern" />
+                                </div>
+                            </div>
+                            <div v-if="action.type === 'mark'">
+                                <div class="flxp-rcc">
+                                    <input type="text" class="action__attribute action-mark__mark flxc"
+                                        :value="action.mark" v-model="action.mark" title="Mark" />
+                                    <span class="action__attribute action-mark__reference">
+                                        <span v-if="action.reference === 'number'">
+                                            File Number
+                                        </span>
+                                        <span v-if="action.reference === 'ext'">
+                                            File Extension
+                                        </span>
+                                    </span>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -274,6 +307,19 @@
                                     <input type="checkbox" id="chkNewActionFilterPureText" class="flxc" />
                                     Use Pure Text Matching
                                 </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="{ active: newAction.type === 'mark' }" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/mark.png" />
+                            <div class="new-action-attributes__inputs" class="flxp-ccc">
+                                <select id="slcNewActoinMarkReference" class="select flxc">
+                                    <option value="number">File Number</option>
+                                    <option value="ext">File Extension</option>
+                                </select><br>
+                                <input type="text" id="txtNewActionMarkMark" class="flxc"
+                                    placeholder="Mark" />
                             </div>
                         </div>
                     </div>
