@@ -3,6 +3,7 @@ function preview() {
     for (var file of vm.files) {
         file.modified = file.name; 
         file.warning = "none"; 
+        file.filtered = false; 
         if (!file.checked) {
             continue; 
         }
@@ -13,6 +14,10 @@ function preview() {
                 continue; 
             }
             vm.actionTypes[action.type].modify(file, action); 
+            if (file.filtered) {
+                file.modified = file.name; 
+                break; 
+            }
         }
         if (file.modified === file.name) {
             file.warning = vm.warnings.raise("unchanged", file.warning); 
@@ -23,6 +28,10 @@ function preview() {
             } else if (other.modified === file.modified) {
                 file.warning = vm.warnings.raise("conflict", file.warning); 
             }
+        }
+        file.modifying = file.checked && !file.filtered; 
+        if (!file.modifying) {
+            number -= 1; 
         }
     }
 }

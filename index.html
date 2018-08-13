@@ -20,7 +20,7 @@
                         actions: [{
                             type: "filter", 
                             checked: true, 
-                            pattern: ".*"
+                            pattern: "a"
                         }, {
                             type: "replace", 
                             checked: true, 
@@ -35,7 +35,6 @@
                                     file.modified = file.modified.replace(
                                         new RegExp(action.pattern), action.replacement
                                     ); 
-                                    console.log(file.name + "===>>>" + file.modified); 
                                 }, 
                                 create: () => {
                                     var pattern = txtNewActionReplacePattern.value; 
@@ -52,7 +51,19 @@
                                 type: "filter", 
                                 name: "Filter", 
                                 modify: (file, action) => {
-                                    return; 
+                                    var pattern = new RegExp(action.pattern); 
+                                    if (!pattern.test(file.modified)) {
+                                        file.warning = vm.warnings.raise("filtered", file.warning); 
+                                        file.filtered = true; 
+                                    }
+                                }, 
+                                create: () => {
+                                    var pattern = txtNewActionFilterPattern.value; 
+                                    vm.actions.push({
+                                        type: "filter", 
+                                        checked: true, 
+                                        pattern: pattern
+                                    }); 
                                 }
                             }, 
                             mark: {
@@ -92,6 +103,7 @@
                             }, 
                             none: 0, 
                             unchanged: 10, 
+                            filtered: 20, 
                             conflict: 1000
                         }
                     }, 
@@ -139,7 +151,7 @@
                             <input type="checkbox" class="files__select"
                                 :checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
-                                <span class="files__number" v-if="file.checked">
+                                <span class="files__number" v-if="file.modifying">
                                     {{file.number}}: 
                                 </span>
                                 <span class="files__original-name" :title="file.dir">
@@ -154,10 +166,16 @@
                                         title="File name unchanged. ">
                                         {{file.modified}}
                                     </span>
+                                    <span v-else-if="file.warning === 'filtered'"
+                                        class="warning--slight"
+                                        title="This file is filtered, no any modification will be exectued. ">
+                                        <span class="files__warning files__warning--filtered">FILTERED</span>
+                                    </span>
                                     <span v-else-if="file.warning === 'conflict'"
                                         class="warning--severe"
                                         title="This name will conflict with one of the previous files. ">
-                                        <span class="files__warning--conflict">CONFLICT</span>{{file.modified}}
+                                        <span class="files__warning files__warning--conflict"
+                                            >CONFLICT</span>{{file.modified}}
                                     </span>
                                 </span>
                             </div>
@@ -209,6 +227,15 @@
                                 <br>
                                 <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
                                     placeholder="Replace with" />
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="{ active: newAction.type === 'filter' }" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/filter.png" />
+                            <div class="new-action-attributes__inputs">
+                                <input type="text" id="txtNewActionFilterPattern" class="flxc"
+                                    placeholder="Filter" />
                             </div>
                         </div>
                     </div>
