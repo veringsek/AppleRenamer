@@ -93,7 +93,7 @@ body {
     padding-left: 3px; 
     padding-right: 3px; 
     margin: 3px; 
-    user-select: none; 
+    /* user-select: none;  */
     cursor: default;
 }
 .files__warning--filtered {
@@ -159,9 +159,14 @@ body {
 }
 .action__attribute {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    border-width: 0px; 
+    font-size: 14pt; 
 }
 .action__title {
     color: grey; 
+    font-size: 9pt; 
+}
+.action__puretext {
     font-size: 9pt; 
 }
 .new-action-attributes input[type=text] {

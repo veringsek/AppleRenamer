@@ -20,7 +20,7 @@
                         actions: [{
                             type: "filter", 
                             checked: true, 
-                            pattern: "a"
+                            pattern: "$"
                         }, {
                             type: "replace", 
                             checked: true, 
@@ -32,18 +32,26 @@
                                 type: "replace", 
                                 name: "Replace", 
                                 modify: (file, action) => {
+                                    var pattern; 
+                                    if (action.puretext) {
+                                        pattern = action.pattern; 
+                                    } else {
+                                        pattern = new RegExp(action.pattern); 
+                                    }
                                     file.modified = file.modified.replace(
-                                        new RegExp(action.pattern), action.replacement
+                                        pattern, action.replacement
                                     ); 
                                 }, 
                                 create: () => {
                                     var pattern = txtNewActionReplacePattern.value; 
                                     var replacement = txtNewActionReplaceReplacement.value; 
+                                    var puretext = chkNewActionReplacePureText.checked; 
                                     vm.actions.push({
                                         type: "replace", 
                                         checked: true, 
                                         pattern: pattern, 
-                                        replacement: replacement
+                                        replacement: replacement, 
+                                        puretext: puretext
                                     }); 
                                 }
                             }, 
@@ -51,18 +59,28 @@
                                 type: "filter", 
                                 name: "Filter", 
                                 modify: (file, action) => {
-                                    var pattern = new RegExp(action.pattern); 
-                                    if (!pattern.test(file.modified)) {
+                                    var pattern; 
+                                    var filtered; 
+                                    if (action.puretext) {
+                                        pattern = action.pattern; 
+                                        filtered = file.modified.indexOf(pattern) < 0; 
+                                    } else {
+                                        pattern = new RegExp(action.pattern); 
+                                        filtered = !pattern.test(file.modified); 
+                                    }
+                                    if (filtered) {
                                         file.warning = vm.warnings.raise("filtered", file.warning); 
                                         file.filtered = true; 
                                     }
                                 }, 
                                 create: () => {
                                     var pattern = txtNewActionFilterPattern.value; 
+                                    var puretext = chkNewActionFilterPureText.checked; 
                                     vm.actions.push({
                                         type: "filter", 
                                         checked: true, 
-                                        pattern: pattern
+                                        pattern: pattern, 
+                                        puretext: puretext
                                     }); 
                                 }
                             }, 
@@ -179,8 +197,8 @@
                                     <span v-else-if="file.warning === 'conflict'"
                                         class="warning--severe"
                                         title="This name will conflict with one of the previous files. ">
-                                        <span class="files__warning files__warning--conflict"
-                                            >CONFLICT</span>{{file.modified}}
+                                        <span class="files__warning files__warning--conflict">
+                                            CONFLICT</span>{{file.modified}}
                                     </span>
                                 </span>
                             </div>
@@ -195,19 +213,24 @@
                             class="files__select" />
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
-                                <span class="action__attribute action__title">Replace</span><br>
-                                <span class="action__attribute action__replace-pattern">
-                                    {{action.pattern}}
-                                </span><br>
-                                <span class="action__attribute action__replace-replacement">
-                                    {{action.replacement}}
-                                </span>
+                                <span class="action__title">Replace</span>
+                                <label class="action__puretext">
+                                    <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
+                                    Use Pure Text Matching
+                                </label><br>
+                                <input type="text" class="action__attribute action__replace-pattern"
+                                    :value="action.pattern" v-model="action.pattern" /><br>
+                                <input type="text" class="action__attribute action__replace-replacement"
+                                    :value="action.replacement" v-model="action.replacement" />
                             </div>
                             <div v-if="action.type === 'filter'">
-                                <span class="action__attribute action__title">Filter</span><br>
-                                <span class="action__attribute action__filter-pattern">
-                                    {{action.pattern}}
-                                </span>
+                                <span class="action__title">Filter</span>
+                                <label class="action__puretext">
+                                    <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
+                                    Use Pure Text Matching
+                                </label><br>
+                                <input type="text" class="action__attribute action__filter-pattern"
+                                    :value="action.pattern" v-model="action.pattern" />
                             </div>
                         </div>
                     </div>
@@ -232,6 +255,11 @@
                                 <br>
                                 <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
                                     placeholder="Replace with" />
+                                <br>
+                                <label for="chkNewActionReplacePureText">
+                                    <input type="checkbox" id="chkNewActionReplacePureText" class="flxc" />
+                                    Use Pure Text Matching
+                                </label>
                             </div>
                         </div>
                     </div>
@@ -241,6 +269,11 @@
                             <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionFilterPattern" class="flxc"
                                     placeholder="Filter" />
+                                <br>
+                                <label for="chkNewActionFilterPureText">
+                                    <input type="checkbox" id="chkNewActionFilterPureText" class="flxc" />
+                                    Use Pure Text Matching
+                                </label>
                             </div>
                         </div>
                     </div>
