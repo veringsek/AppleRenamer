@@ -6,6 +6,7 @@
         <link rel="stylesheet" href="index.css">
         <script>
             const fs = require("fs"); 
+            const path = require("path"); 
             const electron = require("electron"); 
             const {dialog} = require("electron").remote; 
 
@@ -18,6 +19,7 @@
                     el: "#vueBody", 
                     data: {
                         workingdir: "", 
+                        records: [], 
                         files: [], 
                         fileSelected: -1, 
                         preactions: [{
@@ -33,8 +35,8 @@
                         }, {
                             type: "replace", 
                             checked: true, 
-                            pattern: "^.*$", 
-                            replacement: "[:x:]"
+                            pattern: "^.*KU\\]\\[([^\\]]+)\\].*(\\.[^\\.]+)$", 
+                            replacement: "[じょしらく][$1][BDRIP][720P][X264-10bit_AAC][YYDM-11FANS]$2"
                         }], 
                         actionTypes: {
                             replace: {
@@ -208,7 +210,7 @@
                     }
                 }); 
 
-                vm.workingdir = "E:\\Temp\\anime\\じょしらく\\じょしらく"; 
+                vm.workingdir = "E:\\Temp\\anime\\じょしらく\\じょしらく OVA"; 
             }
         </script>
     </head>
@@ -277,6 +279,14 @@
                     <div v-if="files.length < 1">
                         Empty or Invalid Directory
                     </div>
+                </div>
+                <div class="flxp-rcc">
+                    <input type="button" value="Reload" onclick="loadFiles(); "
+                        class="button execution__button execution__button--reload flxc" />
+                    <input type="button" value="Roll Back" onclick="rollback(); " v-if="records.length > 0"
+                        class="button execution__button execution__button--rollback flxc" />
+                    <input type="button" value="Execute" onclick="execute(); "
+                        class="button execution__button execution__button--execute flxc" />
                 </div>
             </div>
             <div id="divActionList" class="main-blocks__block">

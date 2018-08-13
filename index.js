@@ -72,3 +72,37 @@ function loadFiles() {
         vm.files = files; 
     }); 
 }
+
+function execute() {
+    for (var file of vm.files) {
+        var warning = vm.warnings[file.warning]; 
+        if (warning >= 100) {
+            var sure = confirm("Some warnings exist. Sure to execute anyway? "); 
+            if (!sure) {
+                return; 
+            }
+        }
+    }
+    var records = []; 
+    for (var file of vm.files) {
+        var record = rename(path.join(file.dir, file.name), path.join(file.dir, file.modified)); 
+        records.push(record); 
+    }
+    vm.records.push(records); 
+}
+
+function rollback() {
+    var records = vm.records.pop(); 
+    for (var record of records.reverse()) {
+        rename(record.modified, record.original); 
+    }
+}
+
+function rename(original, modified) {
+    fs.rename(original, modified); 
+    var record = {
+        original: original, 
+        modified: modified
+    }; 
+    return record; 
+}

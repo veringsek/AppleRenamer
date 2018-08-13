@@ -147,6 +147,44 @@ body {
 .warning--severe {
     color: red; 
 }
+.execution__button {
+    font-weight: bold; 
+    font-size: 24pt; 
+    padding-left: 15px; 
+    padding-right: 15px; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.execution__button--reload {
+    color: green; 
+    background-color: white; 
+    border-color: green; 
+}
+.execution__button--reload:hover {
+    color: white; 
+    background-color: green; 
+    transition: 0.3s; 
+}
+.execution__button--rollback {
+    color: blue; 
+    background-color: white; 
+    border-color: blue; 
+}
+.execution__button--rollback:hover {
+    color: white; 
+    background-color: blue; 
+    transition: 0.3s; 
+}
+.execution__button--execute {
+    color: red; 
+    background-color: white; 
+    border-color: red; 
+}
+.execution__button--execute:hover {
+    color: white; 
+    background-color: red; 
+    transition: 0.3s; 
+}
 .main-blocks__container {
     display: flex; 
     flex-direction: row; 
