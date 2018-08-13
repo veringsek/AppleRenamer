@@ -16,6 +16,7 @@
                     el: "#vueBody", 
                     data: {
                         files: [], 
+                        fileSelected: -1, 
                         actions: [{
                             type: "filter", 
                             checked: true, 
@@ -68,7 +69,8 @@
                     <input type="text" id="txtWorkingDir" class="flxc at__workingdir" value="C:\" />
                 </div>
                 <div id="divFiles" class="files__body list__container">
-                    <div class="files__item list__item" v-for="(file, f) in files">
+                    <div v-for="(file, f) in files" class="files__item list__item"
+                        v-on:click="fileSelected = f; " v-bind:class="{selected: f == fileSelected}">
                         <div class="flxp-rcc">
                             <input type="checkbox" class="files__select"
                                 v-bind:checked="file.checked" v-model="file.checked" />

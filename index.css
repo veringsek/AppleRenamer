@@ -115,6 +115,10 @@ body {
     margin: 10px; 
     padding: 5px; 
 }
+.list__item.selected {
+    background: rgba(186, 225, 244, 0.3); 
+    border-color: #52C4DD; 
+}
 .expand-button {
     text-align: center; 
     font-size: 16pt; 

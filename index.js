@@ -27,9 +27,7 @@ function modifyName(action, file) {
 }
 
 function modifyNameReplace(action, file) {
-    console.log(file.modified); 
     file.modified = file.modified.replace(new RegExp(action.pattern), action.replacement); 
-    console.log("===>>> " + file.modified); 
 }
 
 function modifyFile(index) {
