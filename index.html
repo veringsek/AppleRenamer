@@ -17,6 +17,12 @@
                     data: {
                         files: [], 
                         fileSelected: -1, 
+                        preactions: [{
+                            type: "mark", 
+                            checked: true, 
+                            reference: "number", 
+                            mark: "[:x:]"
+                        }], 
                         actions: [{
                             type: "filter", 
                             checked: true, 
@@ -26,11 +32,6 @@
                             checked: true, 
                             pattern: "hiberfil.sys", 
                             replacement: "pagefile.sys"
-                        }, {
-                            type: "mark", 
-                            checked: true, 
-                            reference: "number", 
-                            mark: "[:x:]"
                         }], 
                         actionTypes: {
                             replace: {
@@ -98,7 +99,7 @@
                                 create: () => {
                                     var reference = slcNewActoinMarkReference.value; 
                                     var mark = txtNewActionMarkMark.value; 
-                                    vm.actions.push({
+                                    vm.preactions.push({
                                         type: "mark", 
                                         checked: true, 
                                         reference: reference, 
@@ -223,6 +224,26 @@
             </div>
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
+                    <div class="preactions-item list__item flxp-rcc" v-for="action in preactions">
+                        <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
+                            class="files__select" />
+                        <div class="flxc">
+                            <div v-if="action.type === 'mark'">
+                                <div class="flxp-rcc">
+                                    <input type="text" class="action__attribute action-mark__mark flxc"
+                                        :value="action.mark" v-model="action.mark" title="Mark" />
+                                    <span class="action__attribute action-mark__reference">
+                                        <span v-if="action.reference === 'number'">
+                                            File Number
+                                        </span>
+                                        <span v-if="action.reference === 'ext'">
+                                            File Extension
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                     <div class="actions-item list__item flxp-rcc" v-for="action in actions">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
@@ -249,20 +270,6 @@
                                 <div class="flxp-ccs">
                                     <input type="text" class="action__attribute flxc"
                                         :value="action.pattern" v-model="action.pattern" />
-                                </div>
-                            </div>
-                            <div v-if="action.type === 'mark'">
-                                <div class="flxp-rcc">
-                                    <input type="text" class="action__attribute action-mark__mark flxc"
-                                        :value="action.mark" v-model="action.mark" title="Mark" />
-                                    <span class="action__attribute action-mark__reference">
-                                        <span v-if="action.reference === 'number'">
-                                            File Number
-                                        </span>
-                                        <span v-if="action.reference === 'ext'">
-                                            File Extension
-                                        </span>
-                                    </span>
                                 </div>
                             </div>
                         </div>
@@ -313,11 +320,13 @@
                     <div :class="{ active: newAction.type === 'mark' }" class="new-action-attributes">
                         <div class="new-action-attributes__body">
                             <img class="new-action-attributes__icon" src="img/mark.png" />
-                            <div class="new-action-attributes__inputs" class="flxp-ccc">
-                                <select id="slcNewActoinMarkReference" class="select flxc">
-                                    <option value="number">File Number</option>
-                                    <option value="ext">File Extension</option>
-                                </select><br>
+                            <div class="new-action-attributes__inputs" class="flxp-ccs">
+                                <div class="flxc flxp-rcc">
+                                    <select id="slcNewActoinMarkReference" class="select flxc">
+                                        <option value="number">File Number</option>
+                                        <option value="ext">File Extension</option>
+                                    </select>
+                                </div>
                                 <input type="text" id="txtNewActionMarkMark" class="flxc"
                                     placeholder="Mark" />
                             </div>

@@ -116,6 +116,7 @@ body {
     background-color: grey; 
 }
 .files__warning--conflict {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     color: white; 
     background-color: red; 
 }
@@ -189,8 +190,16 @@ body {
     font-weight: bold; 
 }
 .action-mark__reference {
+    font-weight: bold; 
     color: white; 
     background-color: green; 
+    padding-left: 15px; 
+    padding-right: 15px; 
+    padding-top: 3px; 
+    padding-bottom: 3px; 
+    margin: 3px; 
+    user-select: none;
+    cursor: default;
 }
 .new-action-attributes input[type=text] {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
