@@ -85,10 +85,19 @@ body {
 .files__modified-name {
     font-size: 14pt; 
 }
-.files__warning--slight {
+.files__warning--conflict {
+    color: white; 
+    background-color: red; 
+    padding-left: 3px; 
+    padding-right: 3px; 
+    margin: 3px; 
+    user-select: none; 
+    cursor: default;
+}
+.warning--slight {
     color: grey; 
 }
-.files__warning--severe {
+.warning--severe {
     color: red; 
 }
 .main-blocks__container {

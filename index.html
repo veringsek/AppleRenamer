@@ -35,7 +35,7 @@
                                     var modified = file.modified.replace(
                                         new RegExp(action.pattern), action.replacement
                                     ); 
-                                    file.warning = ""; 
+                                    file.warning = "none"; 
                                     for (var other of vm.files) {
                                         if (other === file) {
                                             break; 
@@ -89,6 +89,14 @@
                                 } else {
                                     return b
                                 }
+                            }, 
+                            slight: (warning) => {
+                                var w = vm.warnings[warning]; 
+                                return 0 < w && w < 100; 
+                            }, 
+                            severe: (warning) => {
+                                var w = vm.warnings[warning]; 
+                                return 100 < w; 
                             }, 
                             none: 0, 
                             unchanged: 10, 
@@ -146,20 +154,18 @@
                                     {{file.name}}
                                 </span><br>
                                 <span class="files__modified-name" v-if="file.checked">
-                                    {{file.modified}}
-                                </span>
-                                <span v-if="file.checked">
-                                    <br v-if="file.warning !== ''">
-                                    <span class="files__warning--slight">
-                                        <span v-if="file.warning === 'unchanged'">
-                                            File name is not going to change. 
-                                        </span>
+                                    <span v-if="file.warning === 'none' || file.warning === ''">
+                                        {{file.modified}}
                                     </span>
-                                    <span class="files__warning--severe">
-                                        <span v-if="file.warning === 'conflict'"
-                                            title="This name will conflict with one of the previous files. ">
-                                            CONFLICT
-                                        </span>
+                                    <span v-else-if="file.warning === 'unchanged'"
+                                        class="warning--slight"
+                                        title="File name unchanged. ">
+                                        {{file.modified}}
+                                    </span>
+                                    <span v-else-if="file.warning === 'conflict'"
+                                        class="warning--severe"
+                                        title="This name will conflict with one of the previous files. ">
+                                        <span class="files__warning--conflict">CONFLICT</span>{{file.modified}}
                                     </span>
                                 </span>
                             </div>
