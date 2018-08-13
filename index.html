@@ -12,7 +12,7 @@
                 props: ["up", "down"]
             });
             function init() {
-                vmBody = new Vue({
+                vm = new Vue({
                     el: "#vueBody", 
                     data: {
                         files: [], 
@@ -26,6 +26,16 @@
                             pattern: "R", 
                             replacement: "--KKK--"
                         }], 
+                        actionTypes: [{
+                            type: "replace", 
+                            name: "Replace"
+                        }, {
+                            type: "filter", 
+                            name: "Filter"
+                        }, {
+                            type: "mark", 
+                            name: "Mark"
+                        }], 
                         newAction: {
                             type: 'replace'
                         }
@@ -33,13 +43,13 @@
                     watch: {
                         files: {
                             handler: (value, old) => {
-                                previewFiles(); 
+                                preview(); 
                             }, 
                             deep: true
                         }, 
                         actions: {
                             handler: (value, old) => {
-                                previewFiles(); 
+                                preview(); 
                             }, 
                             deep: true
                         }
@@ -55,7 +65,7 @@
                         file.checked = true; 
                         files.push(file); 
                     }
-                    vmBody.files = files; 
+                    vm.files = files; 
                 }); 
             }
         </script>
@@ -118,9 +128,9 @@
                     </div>
                     <div id="divNewActionType" class="flxp-rcc">
                         <select id="slcNewActionType" class="select flxc" v-model="newAction.type">
-                            <option value="replace">Replace</option>
-                            <option value="filter">Filter</option>
-                            <option value="mark">Mark</option>
+                            <option v-for="actionType in actionTypes" v-bind:value="actionType.type">
+                                {{actionType.name}}
+                            </option>
                         </select>
                     </div>
                     <div v-bind:class="{active: newAction.type === 'replace'}" class="new-action-attributes">
