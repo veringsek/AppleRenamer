@@ -67,6 +67,9 @@ body {
     margin-right: 5px; 
     border-width: 0px; 
 }
+.files__item.not-modifying {
+    opacity: 0.45; 
+}
 .files__select {
     width: 28px; 
     height: 28px;
@@ -76,7 +79,8 @@ body {
 .files__number {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     font-size: 10pt; 
-    color: black; 
+    font-weight: bold; 
+    color: blue; 
 }
 .files__original-name {
     font-size: 10pt; 
