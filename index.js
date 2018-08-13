@@ -1,35 +1,3 @@
-function addNewAction() {
-    var type = vm.newAction.type; 
-    switch (type) {
-        case "replace": 
-            addNewActionReplace(); 
-            break; 
-    }
-}
-
-function addNewActionReplace() {
-    var pattern = txtNewActionReplacePattern.value; 
-    var replacement = txtNewActionReplaceReplacement.value; 
-    vm.actions.push({
-        type: "replace", 
-        checked: true, 
-        pattern: pattern, 
-        replacement: replacement
-    }); 
-}
-
-function modifyName(action, file) {
-    switch (action.type) {
-        case "replace": 
-            modifyNameReplace(action, file); 
-            break; 
-    }
-}
-
-function modifyNameReplace(action, file) {
-    file.modified = file.modified.replace(new RegExp(action.pattern), action.replacement); 
-}
-
 function preview() {
     var number = 0; 
     for (var file of vm.files) {
@@ -42,7 +10,7 @@ function preview() {
             if (!action.checked) {
                 continue; 
             }
-            modifyName(action, file); 
+            vm.actionTypes[action.type].modify(file, action); 
         }
     }
 }

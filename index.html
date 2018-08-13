@@ -26,16 +26,41 @@
                             pattern: "R", 
                             replacement: "--KKK--"
                         }], 
-                        actionTypes: [{
-                            type: "replace", 
-                            name: "Replace"
-                        }, {
-                            type: "filter", 
-                            name: "Filter"
-                        }, {
-                            type: "mark", 
-                            name: "Mark"
-                        }], 
+                        actionTypes: {
+                            replace: {
+                                type: "replace", 
+                                name: "Replace", 
+                                modify: (file, action) => {
+                                    file.modified = file.modified.replace(
+                                        new RegExp(action.pattern), action.replacement
+                                    ); 
+                                }, 
+                                create: () => {
+                                    var pattern = txtNewActionReplacePattern.value; 
+                                    var replacement = txtNewActionReplaceReplacement.value; 
+                                    vm.actions.push({
+                                        type: "replace", 
+                                        checked: true, 
+                                        pattern: pattern, 
+                                        replacement: replacement
+                                    }); 
+                                }
+                            }, 
+                            filter: {
+                                type: "filter", 
+                                name: "Filter", 
+                                modify: (file, action) => {
+                                    return; 
+                                }
+                            }, 
+                            mark: {
+                                type: "mark", 
+                                name: "Mark", 
+                                modify: (file, action) => {
+                                    return; 
+                                }
+                            }
+                        }, 
                         newAction: {
                             type: 'replace'
                         }
@@ -79,15 +104,15 @@
                 </div>
                 <div id="divFiles" class="files__body list__container">
                     <div v-for="(file, f) in files" class="files__item list__item"
-                        v-on:click="fileSelected = f; " v-bind:class="{selected: f == fileSelected}">
+                        v-on:click="fileSelected = f; " :class="{ selected: f === fileSelected }">
                         <div class="flxp-rcc">
                             <input type="checkbox" class="files__select"
-                                v-bind:checked="file.checked" v-model="file.checked" />
+                                :checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
                                 <span class="files__number" v-if="file.checked">
                                     {{file.number}}: 
                                 </span>
-                                <span class="files__original-name" v-bind:title="file.dir">
+                                <span class="files__original-name" :title="file.dir">
                                     {{file.name}}
                                 </span><br>
                                 <span class="files__modified-name" v-if="file.checked">
@@ -101,7 +126,7 @@
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
                     <div class="actions-item list__item flxp-rcc" v-for="action in actions">
-                        <input type="checkbox" v-bind:checked="action.checked" v-model:checked="action.checked"
+                        <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
@@ -128,12 +153,12 @@
                     </div>
                     <div id="divNewActionType" class="flxp-rcc">
                         <select id="slcNewActionType" class="select flxc" v-model="newAction.type">
-                            <option v-for="actionType in actionTypes" v-bind:value="actionType.type">
+                            <option v-for="actionType in actionTypes" :value="actionType.type">
                                 {{actionType.name}}
                             </option>
                         </select>
                     </div>
-                    <div v-bind:class="{active: newAction.type === 'replace'}" class="new-action-attributes">
+                    <div :class="{ active: newAction.type === 'replace' }" class="new-action-attributes">
                         <div class="new-action-attributes__body">
                             <img class="new-action-attributes__icon" src="img/replace-find.png" />
                             <div class="new-action-attributes__inputs">
@@ -147,7 +172,7 @@
                     </div>
                     <div id="divNewActionConfirm" class="flxp-rcc">
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 
-                            class="button flxc" onclick="addNewAction(); " />
+                            class="button flxc" v-on:click="actionTypes[newAction.type].create(); " />
                     </div>
                 </div>
             </div>
