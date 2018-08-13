@@ -6,6 +6,8 @@
         <link rel="stylesheet" href="index.css">
         <script>
             const fs = require("fs"); 
+            const electron = require("electron"); 
+            const {dialog} = require("electron").remote; 
 
             Vue.component("test-comp", {
                 template: "<div><a>{{up}}</a><br><a>{{down}}</a</div>", 
@@ -15,6 +17,7 @@
                 vm = new Vue({
                     el: "#vueBody", 
                     data: {
+                        workingdir: "", 
                         files: [], 
                         fileSelected: -1, 
                         preactions: [{
@@ -170,22 +173,18 @@
                                 } else {
                                     return b
                                 }
-                            }, 
-                            slight: (warning) => {
-                                var w = vm.warnings[warning]; 
-                                return 0 < w && w < 100; 
-                            }, 
-                            severe: (warning) => {
-                                var w = vm.warnings[warning]; 
-                                return 100 < w; 
-                            }, 
+                            },  
                             none: 0, 
                             unchanged: 10, 
                             filtered: 20, 
+                            extchanged: 100, 
                             conflict: 1000
                         }
                     }, 
                     watch: {
+                        workingdir: (value, old) => {
+                            loadFiles(); 
+                        }, 
                         files: {
                             handler: (value, old) => {
                                 preview(); 
@@ -207,19 +206,9 @@
                             deep: true
                         }
                     }
-                })
-
-                fs.readdir("c:/", (error, filenames) => {
-                    var files = []; 
-                    for (var filename of filenames) {
-                        var file = {}; 
-                        file.dir = "c:/"; ///////////
-                        file.name = filename; 
-                        file.checked = true; 
-                        files.push(file); 
-                    }
-                    vm.files = files; 
                 }); 
+
+                vm.workingdir = "E:\\Temp\\anime\\じょしらく\\じょしらく"; 
             }
         </script>
     </head>
@@ -227,8 +216,9 @@
         <div id="vueBody" class="main-blocks__container">
             <div id="divFileList" class="main-blocks__block">
                 <div class="flxp-rcc at__body">
-                    <img class="at__icon" src="img/at.png" />
-                    <input type="text" id="txtWorkingDir" class="flxc at__workingdir" value="C:\" />
+                    <img class="at__icon" src="img/at.png" onclick="browseWorkingDir(); " />
+                    <input type="text" id="txtWorkingDir" class="flxc at__workingdir"
+                        :value="workingdir" v-model="workingdir" />
                 </div>
                 <div id="divFiles" class="files__body list__container">
                     <div v-for="(file, f) in files" class="files__item list__item"
@@ -241,36 +231,51 @@
                             <input type="checkbox" class="files__select"
                                 :checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
-                                <span class="files__number" v-if="!file.invalid">
-                                    {{file.number}}: 
-                                </span>
-                                <span class="files__original-name" :title="file.dir">
-                                    {{file.name}}
-                                </span>
-                                <span v-if="file.warning === 'filtered'"
-                                    class="warning--slight"
-                                    title="This file is filtered, no any modification will be exectued. ">
-                                    <span class="files__warning files__warning--filtered">FILTERED</span>
-                                </span>
-                                <br>
-                                <span class="files__modified-name" v-if="file.checked">
-                                    <span v-if="file.warning === 'none' || file.warning === ''">
-                                        {{file.modified}}
+                                <div class="files__info flxp-rcc">
+                                    <span class="files__number" v-if="!file.invalid">
+                                        {{file.number}}
                                     </span>
-                                    <span v-else-if="file.warning === 'unchanged'"
+                                    <span class="files__ext">
+                                        {{file.name.split(".").pop()}}
+                                    </span>
+                                    <span class="files__original-name flxc" :title="file.dir">
+                                        {{file.name}}
+                                    </span>
+                                    <span v-if="file.warning === 'filtered'"
                                         class="warning--slight"
-                                        title="File name unchanged. ">
-                                        {{file.modified}}
+                                        title="This file is filtered, no any modification will be exectued. ">
+                                        <span class="files__warning files__warning--filtered">FILTERED</span>
                                     </span>
-                                    <span v-else-if="file.warning === 'conflict'"
-                                        class="warning--severe"
-                                        title="This name will conflict with one of the previous files. ">
-                                        <span class="files__warning files__warning--conflict">
-                                            CONFLICT</span>{{file.modified}}
+                                </div>
+                                <div>
+                                    <span class="files__modified-name" v-if="file.checked">
+                                        <span v-if="file.warning === 'none' || file.warning === ''">
+                                            {{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'unchanged'"
+                                            class="warning--slight"
+                                            title="File name unchanged. ">
+                                            {{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'extchanged'"
+                                            class="warning--medium"
+                                            title="File extension would be changed. However, modification is allowed to go. ">
+                                            <span class="files__warning files__warning--medium">
+                                                EXT CHANGED</span>{{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'conflict'"
+                                            class="warning--severe"
+                                            title="This name will conflict with one of the previous files. ">
+                                            <span class="files__warning files__warning--severe">
+                                                CONFLICT</span>{{file.modified}}
+                                        </span>
                                     </span>
-                                </span>
+                                </div>
                             </div>
                         </div>
+                    </div>
+                    <div v-if="files.length < 1">
+                        Empty or Invalid Directory
                     </div>
                 </div>
             </div>

@@ -32,6 +32,9 @@ function preview() {
         if (file.modified === file.name) {
             file.warning = vm.warnings.raise("unchanged", file.warning); 
         }
+        if (file.name.split(".").pop() !== file.modified.split(".").pop()) {
+            file.warning = vm.warnings.raise("extchanged", file.warning); 
+        }
         for (var other of vm.files) {
             if (other === file) {
                 break; 
@@ -40,9 +43,32 @@ function preview() {
             }
         }
         file.invalid = !file.checked || file.filtered; 
-        console.log(file.invalid + ":::" + file.name); 
         if (file.invalid) {
             number -= 1; 
         }
     }
+}
+
+function browseWorkingDir() {
+    var dir = dialog.showOpenDialog({properties: ["openDirectory"]}); 
+    vm.workingdir = dir; 
+}
+
+function loadFiles() {
+    fs.readdir(vm.workingdir, (error, filenames) => {
+        if (error) {
+            vm.files = []; 
+            return; 
+        }
+        var files = []; 
+        for (var filename of filenames) {
+            var file = {
+                dir: vm.workingdir, 
+                name: filename, 
+                checked: true
+            }; 
+            files.push(file); 
+        }
+        vm.files = files; 
+    }); 
 }

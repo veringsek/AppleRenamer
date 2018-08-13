@@ -92,18 +92,33 @@ body {
 }
 .files__number {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
-    font-size: 10pt; 
-    font-weight: bold; 
+    font-size: 12pt; 
     color: blue; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.files__ext {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 12pt; 
+    color: white; 
+    background-color: lightskyblue; 
+    padding-left: 5px; 
+    padding-right: 5px; 
 }
 .files__original-name {
     font-size: 10pt; 
     color: grey; 
+    margin-left: 10px; 
+    text-align: justify; 
+}
+.files__info {
+    margin-bottom: 5px; 
 }
 .files__modified-name {
     font-size: 14pt; 
 }
 .files__warning {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     font-weight: bold; 
     padding-left: 3px; 
     padding-right: 3px; 
@@ -115,13 +130,19 @@ body {
     color: white; 
     background-color: grey; 
 }
-.files__warning--conflict {
-    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+.files__warning--medium {
+    color: white; 
+    background-color: orangered; 
+}
+.files__warning--severe {
     color: white; 
     background-color: red; 
 }
 .warning--slight {
     color: grey; 
+}
+.warning--medium {
+    color: orangered; 
 }
 .warning--severe {
     color: red; 
@@ -178,6 +199,7 @@ body {
 }
 .action-mark__reference {
     font-weight: bold; 
+    text-align: center; 
     color: white; 
     background-color: green; 
     padding-left: 15px; 
@@ -187,6 +209,10 @@ body {
     margin: 3px; 
     user-select: none;
     cursor: default;
+}
+.action-mark__mark {
+    color: green; 
+    font-weight: bold; 
 }
 .preactions-item.invalid, .actions-item.invalid {
     opacity: 0.45; 
@@ -202,10 +228,6 @@ body {
 }
 .action__puretext {
     font-size: 9pt; 
-}
-.action-mark__mark {
-    color: green; 
-    font-weight: bold; 
 }
 .new-action-attributes input[type=text] {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
