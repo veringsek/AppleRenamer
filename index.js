@@ -30,39 +30,19 @@ function modifyNameReplace(action, file) {
     file.modified = file.modified.replace(new RegExp(action.pattern), action.replacement); 
 }
 
-function modifyFile(index) {
-    var file = vmBody.files[index]; 
-    file.modified = file.name; 
-    for (var action of vmBody.actions) {
-        if (!action.checked) {
-            continue; 
-        }
-        modifyName(action, file); 
-    }
-}
-
-function modifyFiles() {
-    var files = vmBody.files; 
-    for (var f = 0; f < files.length; f++) {
-        modifyFile(f); 
-    }
-}
-
-function getFileNumbers() {
-    var files = vmBody.files; 
-    for (var f = 0; f < files.length; f++) {
-        getFileNumber(f); 
-    }
-}
-
-function getFileNumber(index) {
-    var files = vmBody.files; 
+function previewFiles() {
     var number = 0; 
-    for (var i = 0; i <= index; i++) {
-        if (files[i].checked) {
+    for (var file of vmBody.files) {
+        if (file.checked) {
             number += 1; 
         }
+        file.number = number; 
+        file.modified = file.name; 
+        for (var action of vmBody.actions) {
+            if (!action.checked) {
+                continue; 
+            }
+            modifyName(action, file); 
+        }
     }
-    files[index].number = number; 
-    return number; 
 }

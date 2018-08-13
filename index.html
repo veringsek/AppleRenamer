@@ -33,14 +33,13 @@
                     watch: {
                         files: {
                             handler: (value, old) => {
-                                getFileNumbers(); 
-                                modifyFiles(); 
+                                previewFiles(); 
                             }, 
                             deep: true
                         }, 
                         actions: {
                             handler: (value, old) => {
-                                modifyFiles(); 
+                                previewFiles(); 
                             }, 
                             deep: true
                         }
