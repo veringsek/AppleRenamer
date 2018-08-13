@@ -44,13 +44,13 @@
                                     }
                                     var replacement = action.replacement; 
                                     for (var preaction of vm.preactions) {
-                                        console.log(replacement); 
+                                        if (preaction.censored || !preaction.checked) {
+                                            continue; 
+                                        }
                                         replacement = replacement.replace(
                                             preaction.mark, 
                                             vm.actionTypes.mark.act(file, preaction)
                                         ); 
-                                        console.log(vm.actionTypes.mark.act(file, preaction)); 
-                                        console.log(replacement); 
                                     }
                                     file.modified = file.modified.replace(
                                         pattern, replacement
@@ -67,6 +67,13 @@
                                         replacement: replacement, 
                                         puretext: puretext
                                     }); 
+                                }, 
+                                censor: (action) => {
+                                    action.censored = false; 
+                                    if (action.pattern === "") {
+                                        action.censored = true; 
+                                        return; 
+                                    }
                                 }
                             }, 
                             filter: {
@@ -96,6 +103,9 @@
                                         pattern: pattern, 
                                         puretext: puretext
                                     }); 
+                                }, 
+                                censor: (action) => {
+                                    action.censor = false; 
                                 }
                             }, 
                             mark: {
@@ -119,6 +129,26 @@
                                         reference: reference, 
                                         mark: mark
                                     })
+                                }, 
+                                censor: (action) => {
+                                    action.censor = false; 
+                                    if (action.mark === "") {
+                                        action.censored = true; 
+                                        console.log("KK"); 
+                                        return; 
+                                    }
+                                    for (var other of vm.preactions) {
+                                        if (other === action) {
+                                            continue; 
+                                        } else if (!other.checked || other.censored) {
+                                            continue; 
+                                        }
+                                        if (other.mark === action.mark) {
+                                            action.censored = true; 
+                                            console.log("GG"); 
+                                            return; 
+                                        }
+                                    }
                                 }
                             }
                         }, 
@@ -162,8 +192,16 @@
                             }, 
                             deep: true
                         }, 
+                        preactions: {
+                            handler: (value, old) => {
+                                censor(); 
+                                preview(); 
+                            }, 
+                            deep: true
+                        }, 
                         actions: {
                             handler: (value, old) => {
+                                censor(); 
                                 preview(); 
                             }, 
                             deep: true
@@ -197,13 +235,13 @@
                         v-on:click="fileSelected = f; "
                         :class="{
                             selected: f === fileSelected, 
-                            'not-modifying': !file.modifying
+                            invalid: file.invalid
                         }">
                         <div class="flxp-rcc">
                             <input type="checkbox" class="files__select"
                                 :checked="file.checked" v-model="file.checked" />
                             <div class="flxc">
-                                <span class="files__number" v-if="file.modifying">
+                                <span class="files__number" v-if="!file.invalid">
                                     {{file.number}}: 
                                 </span>
                                 <span class="files__original-name" :title="file.dir">
@@ -238,7 +276,8 @@
             </div>
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
-                    <div class="preactions-item list__item flxp-rcc" v-for="action in preactions">
+                    <div class="preactions-item list__item flxp-rcc" v-for="action in preactions"
+                        :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
                         <div class="flxc">
@@ -258,7 +297,8 @@
                             </div>
                         </div>
                     </div>
-                    <div class="actions-item list__item flxp-rcc" v-for="action in actions">
+                    <div class="actions-item list__item flxp-rcc" v-for="action in actions"
+                        :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
                         <div class="flxc">

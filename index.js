@@ -1,3 +1,12 @@
+function censor() {
+    for (var preaction of vm.preactions) {
+        vm.actionTypes[preaction.type].censor(preaction); 
+    }
+    for (var action of vm.actions) {
+        vm.actionTypes[action.type].censor(action); 
+    }
+}
+
 function preview() {
     var number = 0; 
     for (var file of vm.files) {
@@ -5,12 +14,13 @@ function preview() {
         file.warning = "none"; 
         file.filtered = false; 
         if (!file.checked) {
+            file.invalid = true; 
             continue; 
         }
         number += 1; 
         file.number = number; 
         for (var action of vm.actions) {
-            if (!action.checked) {
+            if (!action.checked || action.censored) {
                 continue; 
             }
             vm.actionTypes[action.type].act(file, action); 
@@ -29,8 +39,9 @@ function preview() {
                 file.warning = vm.warnings.raise("conflict", file.warning); 
             }
         }
-        file.modifying = file.checked && !file.filtered; 
-        if (!file.modifying) {
+        file.invalid = !file.checked || file.filtered; 
+        console.log(file.invalid + ":::" + file.name); 
+        if (file.invalid) {
             number -= 1; 
         }
     }

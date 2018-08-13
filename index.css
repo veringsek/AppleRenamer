@@ -81,7 +81,7 @@ body {
     margin-right: 5px; 
     border-width: 0px; 
 }
-.files__item.not-modifying {
+.files__item.invalid {
     opacity: 0.45; 
 }
 .files__select {
@@ -187,6 +187,9 @@ body {
     margin: 3px; 
     user-select: none;
     cursor: default;
+}
+.preactions-item.invalid, .actions-item.invalid {
+    opacity: 0.45; 
 }
 .action__attribute {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
