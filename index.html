@@ -26,7 +26,8 @@
                             type: "mark", 
                             checked: true, 
                             reference: "number", 
-                            mark: "[:n:]"
+                            mark: "[:n:]", 
+                            width: "2"
                         }, {
                             type: "mark", 
                             checked: true, 
@@ -129,7 +130,12 @@
                                 act: (file, action) => {
                                     switch (action.reference) {
                                         case "number": 
-                                            return file.number; 
+                                            var number = file.number.toString(); 
+                                            var width = parseInt(action.width); 
+                                            while (number.length < width) {
+                                                number = "0" + number; 
+                                            }
+                                            return number; 
                                             break; 
                                         case "ext": 
                                             return path.extname(file.name); 
@@ -150,12 +156,16 @@
                                 create: () => {
                                     var reference = vm.newAction.mark.reference; 
                                     var mark = vm.newAction.mark.mark; 
-                                    vm.preactions.push({
+                                    var preaction = {
                                         type: "mark", 
                                         checked: true, 
                                         reference: reference, 
                                         mark: mark
-                                    })
+                                    }; 
+                                    if (reference === "number") {
+                                        preaction.width = vm.newAction.mark.width; 
+                                    }
+                                    vm.preactions.push(preaction); 
                                 }, 
                                 censor: (action) => {
                                     action.censor = false; 
@@ -178,7 +188,7 @@
                             }
                         }, 
                         newAction: {
-                            type: 'replace', 
+                            type: "mark",  
                             replace: {
                                 pattern: "^(.*)$", 
                                 replacement: "$1", 
@@ -250,7 +260,8 @@
         <div id="vueBody" class="main-blocks__container">
             <div id="divFileList" class="main-blocks__block">
                 <div class="flxp-rcc at__body">
-                    <img class="at__icon" src="img/at.png" onclick="browseWorkingDir(); " />
+                    <img class="at__icon" src="img/at-yellow.png" onclick="browseWorkingDir(); "
+                        title="Icon made by Daniel Bruce from www.flaticon.com" />
                     <input type="text" id="txtWorkingDir" class="flxc at__workingdir"
                         :value="workingdir" v-model="workingdir" />
                 </div>
@@ -334,7 +345,7 @@
                                         :value="action.mark" v-model="action.mark" title="Mark" />
                                     <span class="action__attribute action-mark__reference">
                                         <span v-if="action.reference === 'number'">
-                                            File Number
+                                            File Number({{action.width}})
                                         </span>
                                         <span v-if="action.reference === 'ext'">
                                             File Extension
@@ -384,7 +395,8 @@
                         <span>+New Action</span>
                     </div>
                     <div id="divNewActionType" class="flxp-rcc">
-                        <select id="slcNewActionType" class="select flxc" v-model="newAction.type">
+                        <select id="slcNewActionType" class="select flxc"
+                            :value="newAction.type" v-model="newAction.type">
                             <option v-for="actionType in actionTypes" :value="actionType.type">
                                 {{actionType.name}}
                             </option>
@@ -435,6 +447,7 @@
                             <div class="new-action-attributes__inputs" class="flxp-ccs">
                                 <div class="flxc flxp-rcc">
                                     <select id="slcNewActionMarkReference" class="select flxc"
+                                        :value="newAction.mark.reference"
                                         v-model="newAction.mark.reference">
                                         <option value="number">File Number</option>
                                         <option value="ext">File Extension</option>
