@@ -47,7 +47,7 @@
                             type: "replace", 
                             checked: true, 
                             pattern: "^(.*)$", 
-                            replacement: "$1"
+                            replacement: "[:d:][:n:][:.xxx:]"
                         }], 
                         actionTypes: {
                             replace: {
@@ -367,7 +367,7 @@
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
                                 <span class="action__title">Replace</span>
-                                <label class="action__puretext">
+                                <label class="chklabel action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Pure Text Matching
                                 </label><br>
@@ -380,7 +380,7 @@
                             </div>
                             <div v-if="action.type === 'filter'">
                                 <span class="action__title">Filter</span>
-                                <label class="action__puretext">
+                                <label class="chklabel action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Pure Text Matching
                                 </label><br>
@@ -398,14 +398,6 @@
                     <div id="divNewActionExpand" class="expand-button">
                         <span>+New Action</span>
                     </div>
-                    <div id="divNewActionType" class="flxp-rcc">
-                        <select id="slcNewActionType" class="select flxc"
-                            :value="newAction.type" v-model="newAction.type">
-                            <option v-for="actionType in actionTypes" :value="actionType.type">
-                                {{actionType.name}}
-                            </option>
-                        </select>
-                    </div>
                     <div :class="{ active: newAction.type === 'replace' }" class="new-action-attributes">
                         <div class="new-action-attributes__body">
                             <img class="new-action-attributes__icon" src="img/replace-find.png" />
@@ -419,7 +411,7 @@
                                     v-model="newAction.replace.replacement"
                                     placeholder="Replace With" title="Replace With" />
                                 <br>
-                                <label for="chkNewActionReplacePureText">
+                                <label class="chklabel">
                                     <input type="checkbox" id="chkNewActionReplacePureText" class="flxc"
                                         :checked="newAction.replace.puretext" 
                                         v-model="newAction.replace.puretext" />
@@ -436,7 +428,7 @@
                                     :value="newAction.filter.pattern" v-model="newAction.filter.pattern"
                                     placeholder="Filter" title="Filter Pattern" />
                                 <br>
-                                <label for="chkNewActionFilterPureText">
+                                <label class="chklabel">
                                     <input type="checkbox" id="chkNewActionFilterPureText" class="flxc"
                                         :checked="newAction.filter.puretext" 
                                         v-model="newAction.filter.puretext" />
@@ -468,7 +460,13 @@
                             </div>
                         </div>
                     </div>
-                    <div id="divNewActionConfirm" class="flxp-rcc">
+                    <div class="flxp-rcc">
+                        <select id="slcNewActionType" class="select flxc"
+                            :value="newAction.type" v-model="newAction.type">
+                            <option v-for="actionType in actionTypes" :value="actionType.type">
+                                {{actionType.name}}
+                            </option>
+                        </select>
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 
                             class="button flxc" v-on:click="actionTypes[newAction.type].create(); " />
                     </div>

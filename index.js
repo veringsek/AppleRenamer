@@ -32,7 +32,7 @@ function preview() {
         if (file.modified === file.name) {
             file.warning = vm.warnings.raise("unchanged", file.warning); 
         }
-        if (file.name.split(".").pop() !== file.modified.split(".").pop()) {
+        if (path.extname(file.name) !== path.extname(file.modified)) {
             file.warning = vm.warnings.raise("extchanged", file.warning); 
         }
         for (var other of vm.files) {
