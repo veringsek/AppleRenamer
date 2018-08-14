@@ -73,6 +73,11 @@ body {
     height: 32px; 
     width: 32px;
     margin: 8px; 
+    transition: 0.15s; 
+}
+.at__icon:hover {
+    transform: scale(1.3, 1.3); 
+    transition: 0.15s; 
 }
 .at__workingdir {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
@@ -108,8 +113,10 @@ body {
 .files__original-name {
     font-size: 10pt; 
     color: grey; 
-    margin-left: 10px; 
-    text-align: justify; 
+    text-align: justify;
+    word-break: break-all; 
+    margin-left: 5px; 
+    margin-right: 5px; 
 }
 .files__info {
     margin-bottom: 5px; 

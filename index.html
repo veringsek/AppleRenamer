@@ -26,7 +26,17 @@
                             type: "mark", 
                             checked: true, 
                             reference: "number", 
-                            mark: "[:x:]"
+                            mark: "[:n:]"
+                        }, {
+                            type: "mark", 
+                            checked: true, 
+                            reference: "ext", 
+                            mark: "[:.xxx:]"
+                        }, {
+                            type: "mark", 
+                            checked: true, 
+                            reference: "folder", 
+                            mark: "[:d:]"
                         }], 
                         actions: [{
                             type: "filter", 
@@ -62,9 +72,9 @@
                                     ); 
                                 }, 
                                 create: () => {
-                                    var pattern = txtNewActionReplacePattern.value; 
-                                    var replacement = txtNewActionReplaceReplacement.value; 
-                                    var puretext = chkNewActionReplacePureText.checked; 
+                                    var pattern = vm.newAction.replace.pattern; 
+                                    var replacement = vm.newAction.replace.replacement; 
+                                    var puretext = vm.newAction.replace.puretext; 
                                     vm.actions.push({
                                         type: "replace", 
                                         checked: true, 
@@ -100,8 +110,8 @@
                                     }
                                 }, 
                                 create: () => {
-                                    var pattern = txtNewActionFilterPattern.value; 
-                                    var puretext = chkNewActionFilterPureText.checked; 
+                                    var pattern = vm.newAction.filter.pattern; 
+                                    var puretext = vm.newAction.filter.puretext; 
                                     vm.actions.push({
                                         type: "filter", 
                                         checked: true, 
@@ -122,12 +132,24 @@
                                             return file.number; 
                                             break; 
                                         case "ext": 
+                                            return path.extname(file.name); 
+                                            break; 
+                                        case "folder": 
+                                            var folders = file.dir.split(path.sep).reverse(); 
+                                            if (folders[0] === "") {
+                                                if (folders.length < 1) {
+                                                    return null; 
+                                                }
+                                                return folders[1]; 
+                                            } else {
+                                                return folders[0]; 
+                                            }
                                             break; 
                                     }
                                 }, 
                                 create: () => {
-                                    var reference = slcNewActoinMarkReference.value; 
-                                    var mark = txtNewActionMarkMark.value; 
+                                    var reference = vm.newAction.mark.reference; 
+                                    var mark = vm.newAction.mark.mark; 
                                     vm.preactions.push({
                                         type: "mark", 
                                         checked: true, 
@@ -139,7 +161,6 @@
                                     action.censor = false; 
                                     if (action.mark === "") {
                                         action.censored = true; 
-                                        console.log("KK"); 
                                         return; 
                                     }
                                     for (var other of vm.preactions) {
@@ -150,7 +171,6 @@
                                         }
                                         if (other.mark === action.mark) {
                                             action.censored = true; 
-                                            console.log("GG"); 
                                             return; 
                                         }
                                     }
@@ -158,7 +178,19 @@
                             }
                         }, 
                         newAction: {
-                            type: 'replace'
+                            type: 'replace', 
+                            replace: {
+                                pattern: "^(.*)$", 
+                                replacement: "$1", 
+                                puretext: false
+                            }, filter: {
+                                pattern: "^(.*)$", 
+                                puretext: false
+                            }, mark: {
+                                reference: "number", 
+                                mark: "[:x:]", 
+                                width: "2"
+                            }
                         }, 
                         warnings: {
                             raise: (a, b) => {
@@ -237,11 +269,11 @@
                                     <span class="files__number" v-if="!file.invalid">
                                         {{file.number}}
                                     </span>
-                                    <span class="files__ext">
-                                        {{file.name.split(".").pop()}}
-                                    </span>
                                     <span class="files__original-name flxc" :title="file.dir">
                                         {{file.name}}
+                                    </span>
+                                    <span class="files__ext" v-if="path.extname(file.name) !== ''">
+                                        {{path.extname(file.name)}}
                                     </span>
                                     <span v-if="file.warning === 'filtered'"
                                         class="warning--slight"
@@ -307,6 +339,9 @@
                                         <span v-if="action.reference === 'ext'">
                                             File Extension
                                         </span>
+                                        <span v-if="action.reference === 'folder'">
+                                            Folder Name
+                                        </span>
                                     </span>
                                 </div>
                             </div>
@@ -321,7 +356,7 @@
                                 <span class="action__title">Replace</span>
                                 <label class="action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
-                                    Use Pure Text Matching
+                                    Pure Text Matching
                                 </label><br>
                                 <div class="flxp-ccs">
                                     <input type="text" class="action__attribute flxc"
@@ -334,7 +369,7 @@
                                 <span class="action__title">Filter</span>
                                 <label class="action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
-                                    Use Pure Text Matching
+                                    Pure Text Matching
                                 </label><br>
                                 <div class="flxp-ccs">
                                     <input type="text" class="action__attribute flxc"
@@ -360,14 +395,19 @@
                             <img class="new-action-attributes__icon" src="img/replace-find.png" />
                             <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionReplacePattern" class="flxc"
+                                    :value="newAction.replace.pattern" v-model="newAction.replace.pattern"
                                     placeholder="Find" />
                                 <br>
                                 <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
+                                    :value="newAction.replace.replacement" 
+                                    v-model="newAction.replace.replacement"
                                     placeholder="Replace with" />
                                 <br>
                                 <label for="chkNewActionReplacePureText">
-                                    <input type="checkbox" id="chkNewActionReplacePureText" class="flxc" />
-                                    Use Pure Text Matching
+                                    <input type="checkbox" id="chkNewActionReplacePureText" class="flxc"
+                                        :checked="newAction.replace.puretext" 
+                                        v-model="newAction.replace.puretext" />
+                                    Pure Text Matching
                                 </label>
                             </div>
                         </div>
@@ -377,11 +417,14 @@
                             <img class="new-action-attributes__icon" src="img/filter.png" />
                             <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionFilterPattern" class="flxc"
+                                    :value="newAction.filter.pattern" v-model="newAction.filter.pattern"
                                     placeholder="Filter" />
                                 <br>
                                 <label for="chkNewActionFilterPureText">
-                                    <input type="checkbox" id="chkNewActionFilterPureText" class="flxc" />
-                                    Use Pure Text Matching
+                                    <input type="checkbox" id="chkNewActionFilterPureText" class="flxc"
+                                        :checked="newAction.filter.puretext" 
+                                        v-model="newAction.filter.puretext" />
+                                    Pure Text Matching
                                 </label>
                             </div>
                         </div>
@@ -391,13 +434,20 @@
                             <img class="new-action-attributes__icon" src="img/mark.png" />
                             <div class="new-action-attributes__inputs" class="flxp-ccs">
                                 <div class="flxc flxp-rcc">
-                                    <select id="slcNewActoinMarkReference" class="select flxc">
+                                    <select id="slcNewActionMarkReference" class="select flxc"
+                                        v-model="newAction.mark.reference">
                                         <option value="number">File Number</option>
                                         <option value="ext">File Extension</option>
+                                        <option value="folder">Folder Name</option>
                                     </select>
                                 </div>
                                 <input type="text" id="txtNewActionMarkMark" class="flxc"
+                                    :value="newAction.mark.mark" v-model="newAction.mark.mark"
                                     placeholder="Mark" />
+                                <input type="text" id="txtNewActionMarkNumberWidth" class="flxc"
+                                    v-if="newAction.mark.reference === 'number'"
+                                    :value="newAction.mark.width" v-model="newAction.mark.width"
+                                    placeholder="Width" />
                             </div>
                         </div>
                     </div>
