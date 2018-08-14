@@ -188,7 +188,7 @@
                             }
                         }, 
                         newAction: {
-                            type: "mark",  
+                            type: "replace",  
                             replace: {
                                 pattern: "^(.*)$", 
                                 replacement: "$1", 
@@ -334,7 +334,7 @@
             </div>
             <div id="divActionList" class="main-blocks__block">
                 <div id="divActions" class="actions__body list__container">
-                    <div class="preactions-item list__item flxp-rcc" v-for="action in preactions"
+                    <div class="preactions-item list__item flxp-rcc" v-for="(action, a) in preactions"
                         :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
@@ -357,8 +357,10 @@
                                 </div>
                             </div>
                         </div>
+                        <img class="action__remove" src="img/remove-red.png" 
+                            v-on:click="preactions.splice(a, 1); " />
                     </div>
-                    <div class="actions-item list__item flxp-rcc" v-for="action in actions"
+                    <div class="actions-item list__item flxp-rcc" v-for="(action, a) in actions"
                         :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
@@ -388,6 +390,8 @@
                                 </div>
                             </div>
                         </div>
+                        <img class="action__remove" src="img/remove-red.png" 
+                            v-on:click="actions.splice(a, 1); " />
                     </div>
                 </div>
                 <div id="divNewAction" class="new-action">
@@ -408,12 +412,12 @@
                             <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionReplacePattern" class="flxc"
                                     :value="newAction.replace.pattern" v-model="newAction.replace.pattern"
-                                    placeholder="Find" />
+                                    placeholder="Find" title="Find Pattern" />
                                 <br>
                                 <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
                                     :value="newAction.replace.replacement" 
                                     v-model="newAction.replace.replacement"
-                                    placeholder="Replace with" />
+                                    placeholder="Replace With" title="Replace With" />
                                 <br>
                                 <label for="chkNewActionReplacePureText">
                                     <input type="checkbox" id="chkNewActionReplacePureText" class="flxc"
@@ -430,7 +434,7 @@
                             <div class="new-action-attributes__inputs">
                                 <input type="text" id="txtNewActionFilterPattern" class="flxc"
                                     :value="newAction.filter.pattern" v-model="newAction.filter.pattern"
-                                    placeholder="Filter" />
+                                    placeholder="Filter" title="Filter Pattern" />
                                 <br>
                                 <label for="chkNewActionFilterPureText">
                                     <input type="checkbox" id="chkNewActionFilterPureText" class="flxc"
@@ -456,11 +460,11 @@
                                 </div>
                                 <input type="text" id="txtNewActionMarkMark" class="flxc"
                                     :value="newAction.mark.mark" v-model="newAction.mark.mark"
-                                    placeholder="Mark" />
+                                    placeholder="Mark" title="Mark" />
                                 <input type="text" id="txtNewActionMarkNumberWidth" class="flxc"
                                     v-if="newAction.mark.reference === 'number'"
                                     :value="newAction.mark.width" v-model="newAction.mark.width"
-                                    placeholder="Width" />
+                                    placeholder="Width" title="Width" />
                             </div>
                         </div>
                     </div>
