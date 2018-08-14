@@ -1,0 +1,325 @@
+* {
+    box-sizing: border-box; 
+}
+.flxp, .flxp-rcc {
+    display: flex; 
+    flex-direction: row; 
+    justify-content: center; 
+    align-items: center; 
+    flex-wrap: nowrap; 
+}
+.flxp-rcs {
+    display: flex; 
+    flex-direction: row;
+    justify-content: center; 
+    align-items: stretch;
+    flex-wrap: nowrap; 
+}
+.flxp-ccc {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: center;
+    flex-wrap: nowrap; 
+}
+.flxp-ccs {
+    display: flex; 
+    flex-direction: column;
+    justify-content: center; 
+    align-items: stretch;
+    flex-wrap: nowrap; 
+}
+.flxc, .flxc-1 {
+    flex: 1; 
+}
+
+body {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+}
+.button {
+    font-size: 14pt; 
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+    background: white; 
+    border-radius: 3px; 
+    border: 3px solid black;
+    padding: 3px; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    transition: 0.3s; 
+}
+.button:hover {
+    color: white; 
+    background-color: black; 
+    transition: 0.3s; 
+}
+.button:focus {
+    outline: 0; 
+}
+.select {
+    font-family: Cambria, Cochin, Georgia, Times, 'Times New Roman', serif; 
+    font-size: 16pt; 
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    text-align: center; 
+}
+.select:focus {
+    outline: 0; 
+}
+
+.at__body {
+    padding: 8px; 
+}
+.at__icon {
+    height: 32px; 
+    width: 32px;
+    margin: 8px; 
+    transition: 0.15s; 
+}
+.at__icon:hover {
+    transform: scale(1.3, 1.3); 
+    transition: 0.15s; 
+}
+.at__workingdir {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 18pt; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+    border-width: 0px; 
+}
+.files__item.invalid {
+    opacity: 0.45; 
+}
+.files__select {
+    width: 28px; 
+    height: 28px;
+    margin: 8px; 
+    background: red; 
+}
+.files__number {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 12pt; 
+    color: blue; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.files__ext {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 12pt; 
+    color: white; 
+    background-color: lightskyblue; 
+    padding-left: 5px; 
+    padding-right: 5px; 
+}
+.files__original-name {
+    font-size: 10pt; 
+    color: grey; 
+    text-align: justify;
+    word-break: break-all; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.files__info {
+    margin-bottom: 5px; 
+}
+.files__modified-name {
+    font-size: 14pt; 
+}
+.files__warning {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-weight: bold; 
+    padding-left: 3px; 
+    padding-right: 3px; 
+    margin: 3px; 
+    user-select: none; 
+    cursor: default;
+}
+.files__warning--filtered {
+    color: white; 
+    background-color: grey; 
+}
+.files__warning--medium {
+    color: white; 
+    background-color: orangered; 
+}
+.files__warning--severe {
+    color: white; 
+    background-color: red; 
+}
+.warning--slight {
+    color: grey; 
+}
+.warning--medium {
+    color: orangered; 
+}
+.warning--severe {
+    color: red; 
+}
+.execution__button {
+    font-weight: bold; 
+    font-size: 24pt; 
+    padding-left: 15px; 
+    padding-right: 15px; 
+    margin-left: 5px; 
+    margin-right: 5px; 
+}
+.execution__button--reload {
+    color: green; 
+    background-color: white; 
+    border-color: green; 
+}
+.execution__button--reload:hover {
+    color: white; 
+    background-color: green; 
+    transition: 0.3s; 
+}
+.execution__button--rollback {
+    color: blue; 
+    background-color: white; 
+    border-color: blue; 
+}
+.execution__button--rollback:hover {
+    color: white; 
+    background-color: blue; 
+    transition: 0.3s; 
+}
+.execution__button--execute {
+    color: red; 
+    background-color: white; 
+    border-color: red; 
+}
+.execution__button--execute:hover {
+    color: white; 
+    background-color: red; 
+    transition: 0.3s; 
+}
+.main-blocks__container {
+    display: flex; 
+    flex-direction: row; 
+    flex-wrap: nowrap; 
+    justify-content: center;
+    align-items: stretch;
+    height: 100%;
+}
+.main-blocks__block {
+    border-radius: 3px; 
+    box-shadow: 0px 0px 5px black; 
+    margin: 5px; 
+    padding: 10px; 
+    flex-grow: 1; 
+    display: flex; 
+    flex-direction: column; 
+    flex-wrap: nowrap; 
+    justify-content: flex-start;
+    align-items: stretch; 
+}
+.list__container {
+    overflow-y: auto; 
+    flex: 1; 
+}
+.list__item {
+    border-radius: 3px; 
+    border: 2px solid black; 
+    margin: 10px; 
+    padding: 5px; 
+}
+.list__item.selected {
+    background: rgba(186, 225, 244, 0.3); 
+    border-color: #52C4DD; 
+}
+.expand-button {
+    text-align: center; 
+    font-size: 16pt; 
+    font-weight: bold; 
+    color: white; 
+    background-color: black; 
+    border-radius: 3px; 
+    border: 3px solid black; 
+    height: 30px;
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    cursor: default;
+}
+.preactions-item {
+    border-color: green; 
+}
+.action-mark__reference {
+    font-weight: bold; 
+    text-align: center; 
+    color: white; 
+    background-color: green; 
+    padding-left: 15px; 
+    padding-right: 15px; 
+    padding-top: 3px; 
+    padding-bottom: 3px; 
+    margin: 3px; 
+    user-select: none;
+    cursor: default;
+}
+.action-mark__mark {
+    color: green; 
+    font-weight: bold; 
+}
+.preactions-item.invalid, .actions-item.invalid {
+    opacity: 0.45; 
+}
+.action__attribute {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    border-width: 0px; 
+    font-size: 14pt; 
+}
+.action__title {
+    color: grey; 
+    font-size: 9pt; 
+}
+.action__puretext {
+    font-size: 9pt; 
+}
+.action__remove {
+    width: 30px; 
+    height: 30px;
+    margin: 6px; 
+    transition: 0.15s; 
+}
+.action__remove:hover {
+    transform: scale(1.3, 1.3); 
+    transition: 0.15s; 
+}
+.new-action-attributes input[type=text] {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 16pt; 
+    padding-left: 5px; 
+    padding-right: 5px;
+    margin-top: 5px; 
+    margin-bottom: 5px; 
+    width: 100%; 
+}
+.new-action-attributes {
+    display: none; 
+}
+.new-action-attributes.active {
+    display: block; 
+}
+.new-action-attributes__icon {
+    height: 48px; 
+    width: 48px; 
+    margin: 24px; 
+}
+.new-action-attributes__body {
+    display: flex; 
+    flex-direction: row;
+    justify-content: left; 
+    align-items: center; 
+    flex-wrap: nowrap; 
+}
+.new-action-attributes__inputs {
+    flex: 1; 
+}
+#divNewAction {
+    max-height: 40px; 
+    transition: 0.5s; 
+    overflow: hidden; 
+}
+#divNewAction:hover {
+    max-height: 100%;
+    transition: 0.5s; 
+}

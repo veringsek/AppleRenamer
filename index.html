@@ -1,8 +1,479 @@
 <html>
     <head>
         <title>Apple Renamer</title>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.min.js"></script>
+        <script src="index.js"></script>
+        <link rel="stylesheet" href="index.css">
+        <script>
+            const fs = require("fs"); 
+            const path = require("path"); 
+            const electron = require("electron"); 
+            const {dialog} = require("electron").remote; 
+
+            Vue.component("test-comp", {
+                template: "<div><a>{{up}}</a><br><a>{{down}}</a</div>", 
+                props: ["up", "down"]
+            });
+            function init() {
+                vm = new Vue({
+                    el: "#vueBody", 
+                    data: {
+                        workingdir: "", 
+                        records: [], 
+                        files: [], 
+                        fileSelected: -1, 
+                        preactions: [{
+                            type: "mark", 
+                            checked: true, 
+                            reference: "number", 
+                            mark: "[:n:]", 
+                            width: "2"
+                        }, {
+                            type: "mark", 
+                            checked: true, 
+                            reference: "ext", 
+                            mark: "[:.xxx:]"
+                        }, {
+                            type: "mark", 
+                            checked: true, 
+                            reference: "folder", 
+                            mark: "[:d:]"
+                        }], 
+                        actions: [{
+                            type: "filter", 
+                            checked: true, 
+                            pattern: "$"
+                        }, {
+                            type: "replace", 
+                            checked: true, 
+                            pattern: "^(.*)$", 
+                            replacement: "$1"
+                        }], 
+                        actionTypes: {
+                            replace: {
+                                type: "replace", 
+                                name: "Replace", 
+                                act: (file, action) => {
+                                    var pattern = action.pattern; 
+                                    if (!action.puretext) {
+                                        pattern = new RegExp(action.pattern, "g"); 
+                                    }
+                                    var replacement = action.replacement; 
+                                    for (var preaction of vm.preactions) {
+                                        if (preaction.censored || !preaction.checked) {
+                                            continue; 
+                                        }
+                                        replacement = replacement.replace(
+                                            preaction.mark, 
+                                            vm.actionTypes.mark.act(file, preaction)
+                                        ); 
+                                    }
+                                    file.modified = file.modified.replace(
+                                        pattern, replacement
+                                    ); 
+                                }, 
+                                create: () => {
+                                    var pattern = vm.newAction.replace.pattern; 
+                                    var replacement = vm.newAction.replace.replacement; 
+                                    var puretext = vm.newAction.replace.puretext; 
+                                    vm.actions.push({
+                                        type: "replace", 
+                                        checked: true, 
+                                        pattern: pattern, 
+                                        replacement: replacement, 
+                                        puretext: puretext
+                                    }); 
+                                }, 
+                                censor: (action) => {
+                                    action.censored = false; 
+                                    if (action.pattern === "") {
+                                        action.censored = true; 
+                                        return; 
+                                    }
+                                }
+                            }, 
+                            filter: {
+                                type: "filter", 
+                                name: "Filter", 
+                                act: (file, action) => {
+                                    var pattern; 
+                                    var filtered; 
+                                    if (action.puretext) {
+                                        pattern = action.pattern; 
+                                        filtered = file.modified.indexOf(pattern) < 0; 
+                                    } else {
+                                        pattern = new RegExp(action.pattern); 
+                                        filtered = !pattern.test(file.modified); 
+                                    }
+                                    if (filtered) {
+                                        file.warning = vm.warnings.raise("filtered", file.warning); 
+                                        file.filtered = true; 
+                                    }
+                                }, 
+                                create: () => {
+                                    var pattern = vm.newAction.filter.pattern; 
+                                    var puretext = vm.newAction.filter.puretext; 
+                                    vm.actions.push({
+                                        type: "filter", 
+                                        checked: true, 
+                                        pattern: pattern, 
+                                        puretext: puretext
+                                    }); 
+                                }, 
+                                censor: (action) => {
+                                    action.censor = false; 
+                                }
+                            }, 
+                            mark: {
+                                type: "mark", 
+                                name: "Mark", 
+                                act: (file, action) => {
+                                    switch (action.reference) {
+                                        case "number": 
+                                            var number = file.number.toString(); 
+                                            var width = parseInt(action.width); 
+                                            while (number.length < width) {
+                                                number = "0" + number; 
+                                            }
+                                            return number; 
+                                            break; 
+                                        case "ext": 
+                                            return path.extname(file.name); 
+                                            break; 
+                                        case "folder": 
+                                            var folders = file.dir.split(path.sep).reverse(); 
+                                            if (folders[0] === "") {
+                                                if (folders.length < 1) {
+                                                    return null; 
+                                                }
+                                                return folders[1]; 
+                                            } else {
+                                                return folders[0]; 
+                                            }
+                                            break; 
+                                    }
+                                }, 
+                                create: () => {
+                                    var reference = vm.newAction.mark.reference; 
+                                    var mark = vm.newAction.mark.mark; 
+                                    var preaction = {
+                                        type: "mark", 
+                                        checked: true, 
+                                        reference: reference, 
+                                        mark: mark
+                                    }; 
+                                    if (reference === "number") {
+                                        preaction.width = vm.newAction.mark.width; 
+                                    }
+                                    vm.preactions.push(preaction); 
+                                }, 
+                                censor: (action) => {
+                                    action.censor = false; 
+                                    if (action.mark === "") {
+                                        action.censored = true; 
+                                        return; 
+                                    }
+                                    for (var other of vm.preactions) {
+                                        if (other === action) {
+                                            continue; 
+                                        } else if (!other.checked || other.censored) {
+                                            continue; 
+                                        }
+                                        if (other.mark === action.mark) {
+                                            action.censored = true; 
+                                            return; 
+                                        }
+                                    }
+                                }
+                            }
+                        }, 
+                        newAction: {
+                            type: "replace",  
+                            replace: {
+                                pattern: "^(.*)$", 
+                                replacement: "$1", 
+                                puretext: false
+                            }, filter: {
+                                pattern: "^(.*)$", 
+                                puretext: false
+                            }, mark: {
+                                reference: "number", 
+                                mark: "[:x:]", 
+                                width: "2"
+                            }
+                        }, 
+                        warnings: {
+                            raise: (a, b) => {
+                                var wa = vm.warnings[a]; 
+                                if (wa === undefined) {
+                                    wa = 0; 
+                                }
+                                var wb = vm.warnings[b]; 
+                                if (wb === undefined) {
+                                    wb = 0; 
+                                }
+                                if (wa > wb) {
+                                    return a; 
+                                } else {
+                                    return b
+                                }
+                            },  
+                            none: 0, 
+                            unchanged: 10, 
+                            filtered: 20, 
+                            extchanged: 100, 
+                            conflict: 1000
+                        }
+                    }, 
+                    watch: {
+                        workingdir: (value, old) => {
+                            loadFiles(); 
+                        }, 
+                        files: {
+                            handler: (value, old) => {
+                                preview(); 
+                            }, 
+                            deep: true
+                        }, 
+                        preactions: {
+                            handler: (value, old) => {
+                                censor(); 
+                                preview(); 
+                            }, 
+                            deep: true
+                        }, 
+                        actions: {
+                            handler: (value, old) => {
+                                censor(); 
+                                preview(); 
+                            }, 
+                            deep: true
+                        }
+                    }
+                }); 
+
+                vm.workingdir = "C:\\"; 
+            }
+        </script>
     </head>
-    <body>
-        apple-renamer
+    <body onload="init(); ">
+        <div id="vueBody" class="main-blocks__container">
+            <div id="divFileList" class="main-blocks__block">
+                <div class="flxp-rcc at__body">
+                    <img class="at__icon" src="img/at-yellow.png" onclick="browseWorkingDir(); "
+                        title="Icon made by Daniel Bruce from www.flaticon.com" />
+                    <input type="text" id="txtWorkingDir" class="flxc at__workingdir"
+                        :value="workingdir" v-model="workingdir" />
+                </div>
+                <div id="divFiles" class="files__body list__container">
+                    <div v-for="(file, f) in files" class="files__item list__item"
+                        v-on:click="fileSelected = f; "
+                        :class="{
+                            selected: f === fileSelected, 
+                            invalid: file.invalid
+                        }">
+                        <div class="flxp-rcc">
+                            <input type="checkbox" class="files__select"
+                                :checked="file.checked" v-model="file.checked" />
+                            <div class="flxc">
+                                <div class="files__info flxp-rcc">
+                                    <span class="files__number" v-if="!file.invalid">
+                                        {{file.number}}
+                                    </span>
+                                    <span class="files__original-name flxc" :title="file.dir">
+                                        {{file.name}}
+                                    </span>
+                                    <span class="files__ext" v-if="path.extname(file.name) !== ''">
+                                        {{path.extname(file.name)}}
+                                    </span>
+                                    <span v-if="file.warning === 'filtered'"
+                                        class="warning--slight"
+                                        title="This file is filtered, no any modification will be exectued. ">
+                                        <span class="files__warning files__warning--filtered">FILTERED</span>
+                                    </span>
+                                </div>
+                                <div>
+                                    <span class="files__modified-name" v-if="file.checked">
+                                        <span v-if="file.warning === 'none' || file.warning === ''">
+                                            {{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'unchanged'"
+                                            class="warning--slight"
+                                            title="File name unchanged. ">
+                                            {{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'extchanged'"
+                                            class="warning--medium"
+                                            title="File extension would be changed. However, modification is allowed to go. ">
+                                            <span class="files__warning files__warning--medium">
+                                                EXT CHANGED</span>{{file.modified}}
+                                        </span>
+                                        <span v-else-if="file.warning === 'conflict'"
+                                            class="warning--severe"
+                                            title="This name will conflict with one of the previous files. ">
+                                            <span class="files__warning files__warning--severe">
+                                                CONFLICT</span>{{file.modified}}
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div v-if="files.length < 1">
+                        Empty or Invalid Directory
+                    </div>
+                </div>
+                <div class="flxp-rcc">
+                    <input type="button" value="Reload" onclick="loadFiles(); "
+                        class="button execution__button execution__button--reload flxc" />
+                    <input type="button" value="Roll Back" onclick="rollback(); " v-if="records.length > 0"
+                        class="button execution__button execution__button--rollback flxc" />
+                    <input type="button" value="Execute" onclick="execute(); "
+                        class="button execution__button execution__button--execute flxc" />
+                </div>
+            </div>
+            <div id="divActionList" class="main-blocks__block">
+                <div id="divActions" class="actions__body list__container">
+                    <div class="preactions-item list__item flxp-rcc" v-for="(action, a) in preactions"
+                        :class="{ invalid: action.censored || !action.checked }">
+                        <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
+                            class="files__select" />
+                        <div class="flxc">
+                            <div v-if="action.type === 'mark'">
+                                <div class="flxp-rcc">
+                                    <input type="text" class="action__attribute action-mark__mark flxc"
+                                        :value="action.mark" v-model="action.mark" title="Mark" />
+                                    <span class="action__attribute action-mark__reference">
+                                        <span v-if="action.reference === 'number'">
+                                            File Number({{action.width}})
+                                        </span>
+                                        <span v-if="action.reference === 'ext'">
+                                            File Extension
+                                        </span>
+                                        <span v-if="action.reference === 'folder'">
+                                            Folder Name
+                                        </span>
+                                    </span>
+                                </div>
+                            </div>
+                        </div>
+                        <img class="action__remove" src="img/remove-red.png" 
+                            v-on:click="preactions.splice(a, 1); " />
+                    </div>
+                    <div class="actions-item list__item flxp-rcc" v-for="(action, a) in actions"
+                        :class="{ invalid: action.censored || !action.checked }">
+                        <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
+                            class="files__select" />
+                        <div class="flxc">
+                            <div v-if="action.type === 'replace'">
+                                <span class="action__title">Replace</span>
+                                <label class="action__puretext">
+                                    <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
+                                    Pure Text Matching
+                                </label><br>
+                                <div class="flxp-ccs">
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.pattern" v-model="action.pattern" />
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.replacement" v-model="action.replacement" />
+                                </div>
+                            </div>
+                            <div v-if="action.type === 'filter'">
+                                <span class="action__title">Filter</span>
+                                <label class="action__puretext">
+                                    <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
+                                    Pure Text Matching
+                                </label><br>
+                                <div class="flxp-ccs">
+                                    <input type="text" class="action__attribute flxc"
+                                        :value="action.pattern" v-model="action.pattern" />
+                                </div>
+                            </div>
+                        </div>
+                        <img class="action__remove" src="img/remove-red.png" 
+                            v-on:click="actions.splice(a, 1); " />
+                    </div>
+                </div>
+                <div id="divNewAction" class="new-action">
+                    <div id="divNewActionExpand" class="expand-button">
+                        <span>+New Action</span>
+                    </div>
+                    <div id="divNewActionType" class="flxp-rcc">
+                        <select id="slcNewActionType" class="select flxc"
+                            :value="newAction.type" v-model="newAction.type">
+                            <option v-for="actionType in actionTypes" :value="actionType.type">
+                                {{actionType.name}}
+                            </option>
+                        </select>
+                    </div>
+                    <div :class="{ active: newAction.type === 'replace' }" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/replace-find.png" />
+                            <div class="new-action-attributes__inputs">
+                                <input type="text" id="txtNewActionReplacePattern" class="flxc"
+                                    :value="newAction.replace.pattern" v-model="newAction.replace.pattern"
+                                    placeholder="Find" title="Find Pattern" />
+                                <br>
+                                <input type="text" id="txtNewActionReplaceReplacement" class="flxc"
+                                    :value="newAction.replace.replacement" 
+                                    v-model="newAction.replace.replacement"
+                                    placeholder="Replace With" title="Replace With" />
+                                <br>
+                                <label for="chkNewActionReplacePureText">
+                                    <input type="checkbox" id="chkNewActionReplacePureText" class="flxc"
+                                        :checked="newAction.replace.puretext" 
+                                        v-model="newAction.replace.puretext" />
+                                    Pure Text Matching
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="{ active: newAction.type === 'filter' }" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/filter.png" />
+                            <div class="new-action-attributes__inputs">
+                                <input type="text" id="txtNewActionFilterPattern" class="flxc"
+                                    :value="newAction.filter.pattern" v-model="newAction.filter.pattern"
+                                    placeholder="Filter" title="Filter Pattern" />
+                                <br>
+                                <label for="chkNewActionFilterPureText">
+                                    <input type="checkbox" id="chkNewActionFilterPureText" class="flxc"
+                                        :checked="newAction.filter.puretext" 
+                                        v-model="newAction.filter.puretext" />
+                                    Pure Text Matching
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div :class="{ active: newAction.type === 'mark' }" class="new-action-attributes">
+                        <div class="new-action-attributes__body">
+                            <img class="new-action-attributes__icon" src="img/mark.png" />
+                            <div class="new-action-attributes__inputs" class="flxp-ccs">
+                                <div class="flxc flxp-rcc">
+                                    <select id="slcNewActionMarkReference" class="select flxc"
+                                        :value="newAction.mark.reference"
+                                        v-model="newAction.mark.reference">
+                                        <option value="number">File Number</option>
+                                        <option value="ext">File Extension</option>
+                                        <option value="folder">Folder Name</option>
+                                    </select>
+                                </div>
+                                <input type="text" id="txtNewActionMarkMark" class="flxc"
+                                    :value="newAction.mark.mark" v-model="newAction.mark.mark"
+                                    placeholder="Mark" title="Mark" />
+                                <input type="text" id="txtNewActionMarkNumberWidth" class="flxc"
+                                    v-if="newAction.mark.reference === 'number'"
+                                    :value="newAction.mark.width" v-model="newAction.mark.width"
+                                    placeholder="Width" title="Width" />
+                            </div>
+                        </div>
+                    </div>
+                    <div id="divNewActionConfirm" class="flxp-rcc">
+                        <input type="button" id="btnNewActionConfirm" value="Confirm" 
+                            class="button flxc" v-on:click="actionTypes[newAction.type].create(); " />
+                    </div>
+                </div>
+            </div>
+        </div>
     </body>
 </html>
