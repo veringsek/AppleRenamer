@@ -134,6 +134,16 @@ body {
     padding-left: 5px; 
     padding-right: 5px; 
 }
+.files__isdir {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    font-size: 12pt; 
+    color: white; 
+    background-color: rgb(216, 172, 62); 
+    padding-left: 5px; 
+    padding-right: 5px; 
+    user-select: none;
+    cursor: default;
+}
 .files__original-name {
     font-size: 10pt; 
     color: grey; 

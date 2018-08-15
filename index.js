@@ -66,12 +66,31 @@ function loadFiles() {
             return; 
         }
         var files = []; 
-        for (var filename of filenames) {
+        for (var f in filenames) {
+            var filename = filenames[f]; 
             var file = {
                 dir: vm.workingdir, 
                 name: filename, 
                 checked: true
             }; 
+            file.stats = {
+                isDirectory: () => {
+                    return false; 
+                }, 
+                isFile: () => {
+                    return false; 
+                }, 
+                failed: true
+            }; 
+            fs.lstat(path.join(file.dir, file.name), ((i) => {
+                return (error, stats) => {
+                    if (error) {
+                        console.log(error); 
+                    } else {
+                        vm.files[i].stats = stats; 
+                    }
+                }
+            })(f)); 
             files.push(file); 
         }
         vm.files = files; 
