@@ -246,19 +246,6 @@ body {
     background: rgba(186, 225, 244, 0.3); 
     border-color: #52C4DD; 
 }
-.expand-button {
-    text-align: center; 
-    font-size: 16pt; 
-    font-weight: bold; 
-    color: white; 
-    background-color: black; 
-    border-radius: 3px; 
-    border: 3px solid black; 
-    height: 30px;
-    margin-top: 5px;
-    margin-bottom: 5px; 
-    cursor: default;
-}
 .preactions-item {
     border-color: green; 
 }
@@ -290,6 +277,8 @@ body {
 .action__title {
     color: grey; 
     font-size: 9pt; 
+    user-select: none; 
+    cursor: default; 
 }
 .action__puretext {
     font-size: 9pt; 
@@ -339,10 +328,24 @@ body {
 .new-action-attributes__inputs {
     flex: 1; 
 }
+.expand-button {
+    text-align: center; 
+    font-size: 24pt; 
+    font-weight: bold; 
+    color: white; 
+    background-color: black; 
+    border-radius: 3px; 
+    border: 3px solid black; 
+    height: 45px;
+    margin-top: 5px;
+    margin-bottom: 5px; 
+    cursor: default;
+}
 #divNewAction {
-    max-height: 40px; 
+    max-height: 50px; 
     transition: 0.5s; 
     overflow: hidden; 
+    margin-bottom: 5px; 
 }
 #divNewAction:hover {
     max-height: 100%;

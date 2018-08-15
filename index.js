@@ -35,11 +35,16 @@ function preview() {
         if (path.extname(file.name) !== path.extname(file.modified)) {
             file.warning = vm.warnings.raise("extchanged", file.warning); 
         }
-        for (var other of vm.files) {
-            if (other === file) {
-                break; 
-            } else if (other.modified === file.modified) {
-                file.warning = vm.warnings.raise("conflict", file.warning); 
+        if (/[\*\:\?\"\|\<\>\/\\]/g.test(file.modified)) {
+            file.warning = vm.warnings.raise("illegalchars", file.warning); 
+        }
+        if (vm.warnings["conflict"] > vm.warnings[file.warning]) {
+            for (var other of vm.files) {
+                if (other === file) {
+                    break; 
+                } else if (other.modified === file.modified) {
+                    file.warning = vm.warnings.raise("conflict", file.warning); 
+                }
             }
         }
         file.invalid = !file.checked || file.filtered; 

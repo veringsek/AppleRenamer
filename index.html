@@ -222,7 +222,8 @@
                             unchanged: 10, 
                             filtered: 20, 
                             extchanged: 100, 
-                            conflict: 1000
+                            conflict: 1000, 
+                            illegalchars: 2000
                         }
                     }, 
                     watch: {
@@ -314,6 +315,12 @@
                                             <span class="files__warning files__warning--severe">
                                                 CONFLICT</span>{{file.modified}}
                                         </span>
+                                        <span v-else-if="file.warning === 'illegalchars'"
+                                            class="warning--severe"
+                                            title="Containing  illegal characters in file name. ">
+                                            <span class="files__warning files__warning--severe">
+                                                ILLEGAL CHARACTERS</span>{{file.modified}}
+                                        </span>
                                     </span>
                                 </div>
                             </div>
@@ -396,7 +403,7 @@
                 </div>
                 <div id="divNewAction" class="new-action">
                     <div id="divNewActionExpand" class="expand-button">
-                        <span>+New Action</span>
+                        <span>New Action</span>
                     </div>
                     <div :class="{ active: newAction.type === 'replace' }" class="new-action-attributes">
                         <div class="new-action-attributes__body">
