@@ -8,6 +8,9 @@ function censor() {
 }
 
 function preview() {
+    if (!vm.settings.modificationPreview) {
+        return; 
+    }
     var number = 0; 
     for (var file of vm.files) {
         file.modified = file.name; 

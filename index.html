@@ -224,6 +224,9 @@
                             extchanged: 100, 
                             conflict: 1000, 
                             illegalchars: 2000
+                        }, 
+                        settings: {
+                            modificationPreview: true
                         }
                     }, 
                     watch: {
@@ -298,7 +301,8 @@
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="files__modified-name" v-if="file.checked">
+                                    <span class="files__modified-name"
+                                        v-if="settings.modificationPreview && file.checked">
                                         <span v-if="file.warning === 'none' || file.warning === ''">
                                             {{file.modified}}
                                         </span>
@@ -343,7 +347,14 @@
                         class="button execution__button execution__button--execute flxc" />
                 </div>
             </div>
-            <div id="divActionList" class="main-blocks__block">
+            <div id="divActionList" class="main-blocks__block main-blocks__block--action-list">
+                <div>
+                    <label>
+                        <input type="checkbox" :checked="settings.modificationPreview" 
+                            v-model="settings.modificationPreview" />
+                        Modification Preview
+                    </label>
+                </div>
                 <div id="divActions" class="actions__body list__container">
                     <div class="preactions-item list__item flxp-rcc" v-for="(action, a) in preactions"
                         :class="{ invalid: action.censored || !action.checked }">
