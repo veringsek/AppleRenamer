@@ -284,24 +284,17 @@
                                     <span class="files__original-name flxc" :title="file.dir">
                                         {{file.name}}
                                     </span>
-                                    <span class="files__ext" 
+                                    <span class="files__info-tag files__ext" 
                                         v-if="path.extname(file.name) !== '' && !file.stats.isDirectory()">
                                         {{path.extname(file.name)}}
                                     </span>
-                                    <span class="files__isdir">
-                                        <span v-if="file.stats.isDirectory()"
-                                            title="This is a folder. ">
-                                            /
-                                        </span>
-                                        <span v-if="file.stats.failed"
-                                            title="Error occured when specifying this as a file or folder. ">
-                                            ???
-                                        </span>
-                                    </span>
-                                    <span v-if="file.warning === 'filtered'"
-                                        class="warning--slight"
+                                    <span class="files__info-tag files__isdir" v-if="file.stats.isDirectory()"
+                                        title="This is a folder. ">/</span>
+                                    <span class="files__info-tag files__isdir" v-if="file.stats.failed"
+                                        title="Error occured when specifying this as a file or folder. ">???</span>
+                                    <span class="files__warning--slight" v-if="file.warning === 'filtered'"
                                         title="This file is filtered, no any modification will be exectued. ">
-                                        <span class="files__warning files__warning--filtered">FILTERED</span>
+                                        <span class="files__info-tag files__info-tag--filtered">FILTERED</span>
                                     </span>
                                 </div>
                                 <div>
