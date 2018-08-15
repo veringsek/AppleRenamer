@@ -349,24 +349,20 @@
                         :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
-                        <div class="flxc">
-                            <div v-if="action.type === 'mark'">
-                                <div class="flxp-rcc">
-                                    <input type="text" class="action__attribute action-mark__mark flxc"
-                                        :value="action.mark" v-model="action.mark" title="Mark" />
-                                    <span class="action__attribute action-mark__reference">
-                                        <span v-if="action.reference === 'number'">
-                                            File Number({{action.width}})
-                                        </span>
-                                        <span v-if="action.reference === 'ext'">
-                                            File Extension
-                                        </span>
-                                        <span v-if="action.reference === 'folder'">
-                                            Folder Name
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="flxc flxp-rcc" v-if="action.type === 'mark'">
+                            <input type="text" class="action__attribute action-mark__mark flxc"
+                                :value="action.mark" v-model="action.mark" title="Mark" />
+                            <span class="action__attribute action-mark__reference">
+                                <span v-if="action.reference === 'number'">
+                                    File Number({{action.width}})
+                                </span>
+                                <span v-if="action.reference === 'ext'">
+                                    File Extension
+                                </span>
+                                <span v-if="action.reference === 'folder'">
+                                    Folder Name
+                                </span>
+                            </span>
                         </div>
                         <img class="action__remove" src="img/remove-red.png" 
                             v-on:click="preactions.splice(a, 1); " />
