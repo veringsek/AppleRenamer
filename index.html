@@ -334,9 +334,12 @@
                             </div>
                         </div>
                     </div>
-                    <div v-if="files.length < 1">
+                    <div v-if="files.length < 1" class="files__empty">
                         Empty or Invalid Directory
                     </div>
+                </div>
+                <div class="log__body flxp-rcs">
+                    <textarea id="txtLog" class="log__txt flxc" disabled>Welcome to Apple Renamer</textarea>
                 </div>
                 <div class="flxp-rcc">
                     <input type="button" value="Reload" onclick="loadFiles(); "

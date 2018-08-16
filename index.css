@@ -189,6 +189,28 @@ body {
 .warning--severe {
     color: red; 
 }
+.files__empty {
+    text-align: center; 
+    font-size: 20pt; 
+    user-select: none;
+    cursor: default;
+}
+.log__body {
+    font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
+    border-width: 3px; 
+    padding: 10px; 
+    margin-top: 10px; 
+    margin-bottom: 10px; 
+}
+.log__txt {
+    font-size: 14pt; 
+    resize: none; 
+    height: 120px; 
+}
+.log__txt:disabled {
+    color: green; 
+    background-color: white; 
+}
 .execution__button {
     font-weight: bold; 
     font-size: 24pt; 
