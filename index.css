@@ -198,14 +198,16 @@ body {
 .log__body {
     font-family: 'Source Code Pro', 'Courier New', Courier, monospace; 
     border-width: 3px; 
-    padding: 10px; 
+    padding: 5px; 
     margin-top: 10px; 
     margin-bottom: 10px; 
 }
 .log__txt {
-    font-size: 14pt; 
+    font-size: 10pt; 
+    font-weight: bold; 
+    height: 120px;
+    padding: 5px; 
     resize: none; 
-    height: 120px; 
 }
 .log__txt:disabled {
     color: green; 

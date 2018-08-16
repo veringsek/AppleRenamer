@@ -101,6 +101,10 @@ function loadFiles() {
 }
 
 function execute() {
+    if (vm.busy !== "none") {
+        return; 
+    }
+    vm.busy = "execute"; 
     for (var file of vm.files) {
         var warning = vm.warnings[file.warning]; 
         if (warning >= 100) {
@@ -111,25 +115,49 @@ function execute() {
         }
     }
     var records = []; 
+    var bog = []; 
     for (var file of vm.files) {
-        var record = rename(path.join(file.dir, file.name), path.join(file.dir, file.modified)); 
+        var record = rename(path.join(file.dir, file.name), path.join(file.dir, file.modified), bog); 
         records.push(record); 
     }
     vm.records.push(records); 
 }
 
 function rollback() {
+    if (vm.busy !== "none") {
+        return; 
+    }
+    vm.busy = "rollback"; 
     var records = vm.records.pop(); 
+    var bog = []; 
     for (var record of records.reverse()) {
-        rename(record.modified, record.original); 
+        rename(record.modified, record.original, bog); 
     }
 }
 
-function rename(original, modified) {
-    fs.rename(original, modified); 
+function rename(original, modified, bog) {
+    bog.push(original); 
+    fs.rename(original, modified, ((bog, original, modified) => {
+        return (error) => {
+            if (error) {
+                log(error); 
+            }
+            bog.pop(original); 
+            log(original + " >>> " + modified); 
+            if (bog.length < 1) {
+                vm.busy = "none"; 
+                log("Execution done. "); 
+            }
+        }; 
+    })(bog, original, modified)); 
     var record = {
         original: original, 
         modified: modified
     }; 
     return record; 
+}
+
+function log(msg) {
+    txtLog.value += "\n" + msg; 
+    txtLog.scrollTop = txtLog.scrollHeight; 
 }
