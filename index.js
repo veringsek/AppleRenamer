@@ -147,6 +147,7 @@ function rename(original, modified, bog) {
             if (bog.length < 1) {
                 vm.busy = "none"; 
                 log("Execution done. "); 
+                loadFiles(); 
             }
         }; 
     })(bog, original, modified)); 

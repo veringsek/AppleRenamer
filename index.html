@@ -345,9 +345,11 @@
                 <div class="flxp-rcc">
                     <input type="button" value="Reload" onclick="loadFiles(); "
                         class="button execution__button execution__button--reload flxc" />
-                    <input type="button" value="Roll Back" onclick="rollback(); " v-if="busy === 'none' && records.length > 0"
+                    <input type="button" value="Roll Back" onclick="rollback(); " 
+                        v-if="busy === 'none' && records.length > 0"
                         class="button execution__button execution__button--rollback flxc" />
-                    <input type="button" value="Execute" onclick="execute(); " v-if="busy === 'none'"
+                    <input type="button" value="Execute" onclick="execute(); " 
+                        v-if="busy === 'none'"
                         class="button execution__button execution__button--execute flxc" />
                 </div>
             </div>
