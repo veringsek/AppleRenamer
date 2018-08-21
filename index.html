@@ -18,6 +18,7 @@
                 vm = new Vue({
                     el: "#vueBody", 
                     data: {
+                        busy: "none", 
                         workingdir: "", 
                         records: [], 
                         files: [], 
@@ -47,7 +48,7 @@
                             type: "replace", 
                             checked: true, 
                             pattern: "^(.*)$", 
-                            replacement: "$1"
+                            replacement: "[:d:][:n:][:.xxx:]"
                         }], 
                         actionTypes: {
                             replace: {
@@ -222,7 +223,11 @@
                             unchanged: 10, 
                             filtered: 20, 
                             extchanged: 100, 
-                            conflict: 1000
+                            conflict: 1000, 
+                            illegalchars: 2000
+                        }, 
+                        settings: {
+                            modificationPreview: true
                         }
                     }, 
                     watch: {
@@ -283,17 +288,22 @@
                                     <span class="files__original-name flxc" :title="file.dir">
                                         {{file.name}}
                                     </span>
-                                    <span class="files__ext" v-if="path.extname(file.name) !== ''">
+                                    <span class="files__info-tag files__ext" 
+                                        v-if="path.extname(file.name) !== '' && !file.stats.isDirectory()">
                                         {{path.extname(file.name)}}
                                     </span>
-                                    <span v-if="file.warning === 'filtered'"
-                                        class="warning--slight"
+                                    <span class="files__info-tag files__isdir" v-if="file.stats.isDirectory()"
+                                        title="This is a folder. ">/</span>
+                                    <span class="files__info-tag files__isdir" v-if="file.stats.failed"
+                                        title="Error occured when specifying this as a file or folder. ">???</span>
+                                    <span class="files__warning--slight" v-if="file.warning === 'filtered'"
                                         title="This file is filtered, no any modification will be exectued. ">
-                                        <span class="files__warning files__warning--filtered">FILTERED</span>
+                                        <span class="files__info-tag files__info-tag--filtered">FILTERED</span>
                                     </span>
                                 </div>
                                 <div>
-                                    <span class="files__modified-name" v-if="file.checked">
+                                    <span class="files__modified-name"
+                                        v-if="settings.modificationPreview && file.checked">
                                         <span v-if="file.warning === 'none' || file.warning === ''">
                                             {{file.modified}}
                                         </span>
@@ -314,48 +324,62 @@
                                             <span class="files__warning files__warning--severe">
                                                 CONFLICT</span>{{file.modified}}
                                         </span>
+                                        <span v-else-if="file.warning === 'illegalchars'"
+                                            class="warning--severe"
+                                            title="Containing  illegal characters in file name. ">
+                                            <span class="files__warning files__warning--severe">
+                                                ILLEGAL CHARACTERS</span>{{file.modified}}
+                                        </span>
                                     </span>
                                 </div>
                             </div>
                         </div>
                     </div>
-                    <div v-if="files.length < 1">
+                    <div v-if="files.length < 1" class="files__empty">
                         Empty or Invalid Directory
                     </div>
+                </div>
+                <div class="log__body flxp-rcs">
+                    <textarea id="txtLog" class="log__txt flxc" disabled>Welcome to Apple Renamer</textarea>
                 </div>
                 <div class="flxp-rcc">
                     <input type="button" value="Reload" onclick="loadFiles(); "
                         class="button execution__button execution__button--reload flxc" />
-                    <input type="button" value="Roll Back" onclick="rollback(); " v-if="records.length > 0"
+                    <input type="button" value="Roll Back" onclick="rollback(); " 
+                        v-if="busy === 'none' && records.length > 0"
                         class="button execution__button execution__button--rollback flxc" />
-                    <input type="button" value="Execute" onclick="execute(); "
+                    <input type="button" value="Execute" onclick="execute(); " 
+                        v-if="busy === 'none'"
                         class="button execution__button execution__button--execute flxc" />
                 </div>
             </div>
-            <div id="divActionList" class="main-blocks__block">
+            <div id="divActionList" class="main-blocks__block main-blocks__block--action-list">
+                <div>
+                    <label>
+                        <input type="checkbox" :checked="settings.modificationPreview" 
+                            v-model="settings.modificationPreview" />
+                        Modification Preview
+                    </label>
+                </div>
                 <div id="divActions" class="actions__body list__container">
                     <div class="preactions-item list__item flxp-rcc" v-for="(action, a) in preactions"
                         :class="{ invalid: action.censored || !action.checked }">
                         <input type="checkbox" :checked="action.checked" v-model:checked="action.checked"
                             class="files__select" />
-                        <div class="flxc">
-                            <div v-if="action.type === 'mark'">
-                                <div class="flxp-rcc">
-                                    <input type="text" class="action__attribute action-mark__mark flxc"
-                                        :value="action.mark" v-model="action.mark" title="Mark" />
-                                    <span class="action__attribute action-mark__reference">
-                                        <span v-if="action.reference === 'number'">
-                                            File Number({{action.width}})
-                                        </span>
-                                        <span v-if="action.reference === 'ext'">
-                                            File Extension
-                                        </span>
-                                        <span v-if="action.reference === 'folder'">
-                                            Folder Name
-                                        </span>
-                                    </span>
-                                </div>
-                            </div>
+                        <div class="flxc flxp-rcc" v-if="action.type === 'mark'">
+                            <input type="text" class="action__attribute action-mark__mark flxc"
+                                :value="action.mark" v-model="action.mark" title="Mark" />
+                            <span class="action__attribute action-mark__reference">
+                                <span v-if="action.reference === 'number'">
+                                    File Number({{action.width}})
+                                </span>
+                                <span v-if="action.reference === 'ext'">
+                                    File Extension
+                                </span>
+                                <span v-if="action.reference === 'folder'">
+                                    Folder Name
+                                </span>
+                            </span>
                         </div>
                         <img class="action__remove" src="img/remove-red.png" 
                             v-on:click="preactions.splice(a, 1); " />
@@ -367,7 +391,7 @@
                         <div class="flxc">
                             <div v-if="action.type === 'replace'">
                                 <span class="action__title">Replace</span>
-                                <label class="action__puretext">
+                                <label class="chklabel action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Pure Text Matching
                                 </label><br>
@@ -380,7 +404,7 @@
                             </div>
                             <div v-if="action.type === 'filter'">
                                 <span class="action__title">Filter</span>
-                                <label class="action__puretext">
+                                <label class="chklabel action__puretext">
                                     <input type="checkbox" :checked="action.puretext" v-model="action.puretext" />
                                     Pure Text Matching
                                 </label><br>
@@ -396,15 +420,7 @@
                 </div>
                 <div id="divNewAction" class="new-action">
                     <div id="divNewActionExpand" class="expand-button">
-                        <span>+New Action</span>
-                    </div>
-                    <div id="divNewActionType" class="flxp-rcc">
-                        <select id="slcNewActionType" class="select flxc"
-                            :value="newAction.type" v-model="newAction.type">
-                            <option v-for="actionType in actionTypes" :value="actionType.type">
-                                {{actionType.name}}
-                            </option>
-                        </select>
+                        <span>New Action</span>
                     </div>
                     <div :class="{ active: newAction.type === 'replace' }" class="new-action-attributes">
                         <div class="new-action-attributes__body">
@@ -419,7 +435,7 @@
                                     v-model="newAction.replace.replacement"
                                     placeholder="Replace With" title="Replace With" />
                                 <br>
-                                <label for="chkNewActionReplacePureText">
+                                <label class="chklabel">
                                     <input type="checkbox" id="chkNewActionReplacePureText" class="flxc"
                                         :checked="newAction.replace.puretext" 
                                         v-model="newAction.replace.puretext" />
@@ -436,7 +452,7 @@
                                     :value="newAction.filter.pattern" v-model="newAction.filter.pattern"
                                     placeholder="Filter" title="Filter Pattern" />
                                 <br>
-                                <label for="chkNewActionFilterPureText">
+                                <label class="chklabel">
                                     <input type="checkbox" id="chkNewActionFilterPureText" class="flxc"
                                         :checked="newAction.filter.puretext" 
                                         v-model="newAction.filter.puretext" />
@@ -468,7 +484,13 @@
                             </div>
                         </div>
                     </div>
-                    <div id="divNewActionConfirm" class="flxp-rcc">
+                    <div class="flxp-rcc">
+                        <select id="slcNewActionType" class="select flxc"
+                            :value="newAction.type" v-model="newAction.type">
+                            <option v-for="actionType in actionTypes" :value="actionType.type">
+                                {{actionType.name}}
+                            </option>
+                        </select>
                         <input type="button" id="btnNewActionConfirm" value="Confirm" 
                             class="button flxc" v-on:click="actionTypes[newAction.type].create(); " />
                     </div>
